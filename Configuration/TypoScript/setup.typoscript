@@ -1,0 +1,93 @@
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:fluid_styled_content/Configuration/TypoScript/setup.txt">
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:site_package/Configuration/TypoScript/Helper/DynamicContent.typoscript">
+
+page = PAGE
+page {
+	typeNum = 0
+
+	10 = FLUIDTEMPLATE
+	10 {
+			templateName.cObject = CASE
+			templateName.cObject {
+				// der key nach dem geswitched wird. Value nimmt den Wert aus der Variable pagelayout, welche das backendLayout der page im Backend hält
+				key.data = pagelayout
+
+				// Wenn test ausgewählt wurde (wurde vorher in dem TCA/Overrides/sys_template mit der ExtensionManagementUtility gesetzt und
+				// ist unter Configuration/TSConfig definiert)
+				pagets__test = TEXT
+				pagets__test.value = Test
+
+				// Wenn nix übereinstimmt
+				default = TEXT
+				// Der Wert bestimmt welches HTML-Template geladen wird
+				default.value = Default
+			}
+
+			dataProcessing {
+				10 = TYPO3\CMS\Frontend\DataProcessing\MenuProcessor
+				10 {
+                    levels = 2
+                    includeSpacer = 1
+
+                    as = mainnavigation
+				}
+   		}
+
+		 templateRootPaths {
+		    0 = EXT:site_package/Resources/Private/Templates/Page/
+		    1 = {$page.fluidtemplate.templateRootPath}
+		 }
+		 partialRootPaths {
+		    0 = EXT:site_package/Resources/Private/Partials/Page/
+			1 = {$page.fluidtemplate.partialRootPath}
+		}
+		layoutRootPaths {
+		    0 = EXT:site_package/Resources/Private/Layouts/Page/
+			1 = {$page.fluidtemplate.layoutRootPath}
+		}
+	}
+
+	includeCSS {
+	    bootstrap = https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css
+   	    bootstrap.external = 1
+   	}
+
+	 includeJSFooter {
+	 		bootstrap = https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js
+			bootstrap.external = 1
+
+			navbar = EXT:site_package/Resources/Public/JavaScript/Navbar.js
+	 }
+
+	 config {
+	   absRefPrefix = auto
+	   cache_period = 86400
+	   debug = 0
+	   disablePrefixComment = 1
+	   doctype = html5
+	   extTarget =
+	   index_enable = 1
+	   index_externals = 1
+	   index_metatags = 1
+	   inlineStyle2TempFile = 1
+	   intTarget =
+	   linkVars = L
+	   metaCharset = utf-8
+	   no_cache = 0
+	   pageTitleFirst = 1
+	   prefixLocalAnchors = all
+	   removeDefaultJS = 0
+	   renderCharset = utf-8
+	   sendCacheHeaders = 1
+	   uniqueLinkVars = 1
+
+	   // Disable image upscaling
+	   noScaleUp = 1
+
+	   // Compression and concatenation of CSS and JS Files
+	   compressCss = 0
+	   compressJs = 0
+	   concatenateCss = 0
+	   concatenateJs = 0
+	 }
+}
