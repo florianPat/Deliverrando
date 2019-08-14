@@ -3,15 +3,21 @@ var lastVisibleNavItem = '';
 function showNavItem(id)
 {
   if(lastVisibleNavItem !== '') {
-    let element = document.getElementById(lastVisibleNavItem);
-    if(element !== null) {
-      element.style.visibility = 'collapse';
+    let elements = document.getElementsByClassName(lastVisibleNavItem);
+    if(elements !== null) {
+      for (let i = 0; i < elements.length; ++i) {
+        elements[i].style.visibility = 'collapse';
+      }
+    }
+    else {
+      console.log("items");
     }
   }
 
   lastVisibleNavItem = id + 'Child';
-  let element = document.getElementById(lastVisibleNavItem);
-  if(element !== null) {
-    element.style.visibility = 'visible';
+  let elements = document.getElementsByClassName(lastVisibleNavItem);
+  if(elements !== null) {
+    for(let i = 0; i < elements.length; ++i)
+      elements[i].style.visibility = 'visible';
   }
 }
