@@ -3,7 +3,7 @@ defined('TYPO3_MODE') || die();
 
 (function()
 {
-  // Dadurch kann man das Template im Backend auswählen
+  // NOTE: Dadurch kann man das Template im Backend auswählen
   $extensionKey = 'site_package';
 
   \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(

@@ -8,8 +8,6 @@
         <td><strong>Time of delievery</strong></td>
         <td><strong>Categories</strong></td>
     </tr>
-    <!-- The template for the class StoreRepository (the folder name) and the action index (method in class) -->
-    <f:debug>{_all}</f:debug>
     <f:for each="{products}" as="product">
         <tr>
             <td align="top">{product.name}</td>
@@ -21,13 +19,13 @@
                     {category.name},
                 </f:for>
             </td>
-            <f:if condition="{loggedIn}">
+            <f:security.ifAuthenticated>
                 <td algin="top">
                     <f:link.action controller="StoreInventory" action="remove" arguments="{product: product}">
                         <strong>-</strong>
                     </f:link.action>
                 </td>
-            </f:if>
+            </f:security.ifAuthenticated>
         </tr>
     </f:for>
 </table>

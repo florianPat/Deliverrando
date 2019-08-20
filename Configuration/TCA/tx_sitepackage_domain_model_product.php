@@ -48,6 +48,8 @@ return [
             'maxitems' => '5',
             'multiple' => '0',
             'autoSizeMax' => '5',
+            // NOTE: Which table to choose from, and where to store it (foreign_field is used if it is a 1:n relation.
+            // One would habe to set the field of the "child" table
             'foreign_table' => 'tx_sitepackage_domain_model_category',
             'MM' => 'tx_sitepackage_product_category_mm',
         ],

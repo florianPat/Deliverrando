@@ -5,9 +5,9 @@ CREATE TABLE tx_sitepackage_domain_model_product (
   description varchar(255) DEFAULT '' NOT NULL,
   quantity int(11) DEFAULT 0 NOT NULL,
   delieveryTime int(11) DEFAULT 0 NOT NULL,
-  -- foreign uid for 1-n relation
+  --NOTE: foreign uid for 1-n relation
   delieverRando int(11) DEFAULT 0 NOT NULL,
-  -- categories member (its a counter in the db)
+  --NOTE: categories objectStorage-member (its a counter in the db)
   categories int(11) DEFAULT 0 NOT NULL,
 
   crdate int(11) DEFAULT 0 NOT NULL,
@@ -24,9 +24,9 @@ CREATE TABLE tx_sitepackage_domain_model_delieverRando(
     pid int(11) DEFAULT 0 NOT NULL,
 
     name varchar(255) DEFAULT '' NOT NULL,
-    -- products member (its a counter in the db)
+    --NOTE: products objectStorage-member (its a counter in the db)
     products int(11) DEFAULT 0 NOT NULL,
-    -- uid of the fe-userGroup
+    --NOTE: uid of the fe-userGroup (same in the domain model)
     userGroup int(11) NOT NULL,
 
     crdate int(11) DEFAULT 0 NOT NULL,
@@ -53,7 +53,8 @@ CREATE TABLE tx_sitepackage_domain_model_category (
     KEY parent (pid)
 );
 
--- table for m-n relation
+--NOTE: table for m-n relation (local = product & foreign = category. Sorting muss gesetzt werden, sorting_foreign aber nicht)
+--NOTE: Die naming convetion besagt, dass man die DB tx_pluginname_localTable_foreignTable_mm nennen sollte!)
 CREATE TABLE tx_sitepackage_product_category_mm(
     uid int(11) unsigned DEFAULT 0 NOT NULL auto_increment,
     pid int(11) DEFAULT 0 NOT NULL,
@@ -68,6 +69,6 @@ CREATE TABLE tx_sitepackage_product_category_mm(
     hidden smallint(4) unsigned DEFAULT 0 NOT NULL,
 );
 
-/* Dieser table wird nur erstellt, wenn man im install tool unter Database Analyzer
+/* NOTE: Dieser table wird nur erstellt, wenn man im install tool unter Database Analyzer
  * die Datenbank mit (dieser) Spezifikation vergleicht, und dann den table erstellt.
  */

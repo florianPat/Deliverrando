@@ -24,13 +24,13 @@ page {
 			}
 
 			dataProcessing {
-				10 = TYPO3\CMS\Frontend\DataProcessing\MenuProcessor
-				10 {
+                10 = TYPO3\CMS\Frontend\DataProcessing\MenuProcessor
+                10 {
                     levels = 2
                     includeSpacer = 1
 
                     as = mainnavigation
-				}
+                }
    		}
 
 		 templateRootPaths {

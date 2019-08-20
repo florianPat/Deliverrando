@@ -21,7 +21,7 @@ $EM_CONF[$_EXTKEY] = [
 	'clearCacheOnLoad' => 1,
 	'autoload' => [
         'psr-4' => [
-            'MyVendor\\SitePackage\\' => 'Classes'
+            'MyVendor\\SitePackage\\' => 'Classes', // NOTE: Dies muss auch in der autoload section von composer.json eingestellt werden!
         ],
     ],
 ];

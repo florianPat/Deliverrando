@@ -23,6 +23,7 @@ class StoreInventoryController extends ActionController
     /**
      * @var \MyVendor\SitePackage\Domain\Repository\CategoryRepository
      * @inject
+     * NOTE: Has the same effect as declaring the method injectCategoryRepository
      */
     private $categoryRepository;
 
@@ -66,19 +67,17 @@ class StoreInventoryController extends ActionController
         }
 
         if($GLOBALS['TSFE']->fe_user->user['uid']) {
-          $this->view->assign('loggedIn', $GLOBALS['TSFE']->fe_user->user['uid']);
-
-          $allCategories = $this->categoryRepository->findAll();
-          $categoryOptions = [0 => ''];
-          $allCategories->rewind();
-          while($allCategories->valid()) {
+            $allCategories = $this->categoryRepository->findAll();
+            $categoryOptions = [0 => ''];
+            $allCategories->rewind();
+            while($allCategories->valid()) {
               $it = $allCategories->current();
 
               $categoryOptions[$it->getUid()] = $it->getName();
 
               $allCategories->next();
-          }
-          $this->view->assign('categoryOptions', $categoryOptions);
+            }
+            $this->view->assign('categoryOptions', $categoryOptions);
 
 //          $userGroupUid = $GLOBALS['TSFE']->fe_user->user['usergroup'];
 //
@@ -135,26 +134,16 @@ class StoreInventoryController extends ActionController
     }
 
     /**
-     * @param string $name
-     * @param string $description
-     * @param int $quantity
-     * @param int $delieveryTime
-     * @param int $category
+     * @param \MyVendor\SitePackage\Domain\Model\Product $product
      * @return void
      *
-     * One can use @   TYPO3\CMS\Extbase\Annotation\IgnoreValidation("argument") to irgnore the argument validation that happens
-     * automatically
+     * NOTE: One can use @   TYPO3\CMS\Extbase\Annotation\IgnoreValidation("argument") to irgnore the argument validation that happens
+     * automatically.
+     * NOTE: Before the action runs, the arguments are validated. The annotations from the properties, the Validator with
+     * the name \MyVendor\SitePackage\Domain\Validator\ClassnameValidator, and the annotations in the action
      */
-    public function addAction($name, $description, $quantity, $delieveryTime, $category)
+    public function addAction($product)
     {
-        $categories = null;
-
-        if($category !== 0) {
-            $categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-            $categories->attach($this->categoryRepository->findByUid($category));
-        }
-        $product = new Product($name, $description, $quantity, $delieveryTime, $categories);
-
         $this->productRepository->add($product);
         $this->forward('index', null, null, ['messageText' => 'Added', 'product' => $product]);
     }

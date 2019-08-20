@@ -1,5 +1,6 @@
 <?php
 
+// NOTE: How a new instance can be added to the database through the backend
 return [
     'ctrl' => [
         'title' => 'Category',
