@@ -41,7 +41,7 @@ class DelieverRandoRepository extends Repository
     /**
      * @param int $userGroup
      */
-    public function findSubGroup(int $userGroup)
+    public function findSubGroup($userGroup)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_groups');
 

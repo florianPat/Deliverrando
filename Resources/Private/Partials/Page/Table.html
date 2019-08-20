@@ -15,8 +15,15 @@
             <td align="top">{product.quantity}</td>
             <td align="top">{product.delieveryTime}</td>
             <td align="top">
-                <f:for each="{product.categories}" as="category">
-                    {category.name},
+                <f:for each="{product.categories}" as="category" iteration="it">
+                    <f:if condition="it.isLast">
+                        <f:then>
+                            {category.name}
+                        </f:then>
+                        <f:else>
+                            {category.name},
+                        </f:else>
+                    </f:if>
                 </f:for>
             </td>
             <f:security.ifAuthenticated>

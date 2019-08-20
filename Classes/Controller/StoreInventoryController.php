@@ -51,7 +51,7 @@ class StoreInventoryController extends ActionController
    * @param array $errores
    * @return void
    */
-    public function indexAction(string $messageText = '', \MyVendor\SitePackage\Domain\Model\Product $product = null, $errors = null)
+    public function indexAction($messageText = '', \MyVendor\SitePackage\Domain\Model\Product $product = null, $errors = null)
     {
         if($errors !== null) {
             $this->view->assign('errors', $errors);
@@ -118,7 +118,7 @@ class StoreInventoryController extends ActionController
     public function removeAction(\MyVendor\SitePackage\Domain\Model\Product $product)
     {
         $this->productRepository->remove($product);
-
+        //NOTE: Druch forward werden die Daten nicht persistet
         $this->forward('index', null, null, ['messageText' => 'Removed', 'product' => $product]);
     }
 
@@ -129,12 +129,12 @@ class StoreInventoryController extends ActionController
     public function updateAction(\MyVendor\SitePackage\Domain\Model\Product $product)
     {
         $this->productRepository->update($product);
-
         $this->forward('index', null, null, ['messageText' => 'Updated', 'product' => $product]);
     }
 
     /**
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
+     * @param int $category
      * @return void
      *
      * NOTE: One can use @   TYPO3\CMS\Extbase\Annotation\IgnoreValidation("argument") to irgnore the argument validation that happens
@@ -142,8 +142,12 @@ class StoreInventoryController extends ActionController
      * NOTE: Before the action runs, the arguments are validated. The annotations from the properties, the Validator with
      * the name \MyVendor\SitePackage\Domain\Validator\ClassnameValidator, and the annotations in the action
      */
-    public function addAction($product)
+    public function addAction(\MyVendor\SitePackage\Domain\Model\Product $product, $category)
     {
+        $categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $categories->attach($this->categoryRepository->findByUid($category));
+        $product->setCategories($categories);
+
         $this->productRepository->add($product);
         $this->forward('index', null, null, ['messageText' => 'Added', 'product' => $product]);
     }
