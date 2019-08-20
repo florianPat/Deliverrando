@@ -1,6 +1,6 @@
 lib.dynamicContent = CONTENT
 lib.dynamicContent {
-    // Which table (so wie FROM oder?)
+    // Which table (so wie FROM)
     table = tt_content
     select {
       // page id of current page

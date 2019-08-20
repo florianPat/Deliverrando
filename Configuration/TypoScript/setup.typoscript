@@ -15,7 +15,7 @@ page {
 				// Wenn test ausgewählt wurde (wurde vorher in dem TCA/Overrides/sys_template mit der ExtensionManagementUtility gesetzt und
 				// ist unter Configuration/TSConfig definiert)
 				pagets__test = TEXT
-				pagets__test.value = Test
+				pagets__test.value = Default
 
 				// Wenn nix übereinstimmt
 				default = TEXT
@@ -53,10 +53,10 @@ page {
    	}
 
 	 includeJSFooter {
-	 		bootstrap = https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js
-			bootstrap.external = 1
+	 	bootstrap = https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js
+		bootstrap.external = 1
 
-			navbar = EXT:site_package/Resources/Public/JavaScript/Navbar.js
+		navbar = EXT:site_package/Resources/Public/JavaScript/Navbar.js
 	 }
 
 	 config {

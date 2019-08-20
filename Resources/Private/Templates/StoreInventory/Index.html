@@ -1,15 +1,54 @@
-<table border="1" cellspacing="1" cellpadding="5">
-   <tr>
-      <td>Product name</td>
-      <td>Product description</td>
-      <td>Quantity</td>
-   </tr>
-   <!--- The template for the class StoreRepository (the folder name) and the action index (method in class) ---->
-   <f:for each="{products}" as="product">
-      <tr>
-         <td align="top">{product.name}</td>
-         <td align="top"><f:format.crop maxCharacters="100">{product.description}</f:format.crop></td>
-         <td align="top">{product.quantity}</td>
-      </tr>
-   </f:for>
-</table>
+<f:if condition="{messageText}">
+      <p id="operationMsg"><em>{messageText} the item <strong>"{messageProduct.name}"</strong></em></p>
+</f:if>
+
+<f:render partial="Page/Table" arguments="{_all}"/>
+
+<br>
+
+<f:if condition="{loggedIn}">
+    <f:if condition="{errors}">
+        <f:for each="{errors" as="error">
+            <p style="color: red">{error}</p>
+            <br />
+        </f:for>
+    </f:if>
+
+    <f:form object="{addProduct}" arguments="{addProduct: addProduct}" controller="StoreInventory" action="add">
+        <f:form.textfield name="name" property="name" placeholder="Name" />
+        <f:form.textarea name="description" property="description" placeholder="Description" />
+        <f:form.textfield name="quantity" property="quantity" placeholder="Quantity" type="number" />
+        <f:form.textfield name="delieveryTime" property="delieveryTime" placeholder="Delievery time" type="number" />
+        <f:form.select name="category" property="categories" options="{categoryOptions}" />
+
+        <f:form.submit value="Add"/>
+    </f:form>
+</f:if>
+
+<br>
+<br>
+<f:if condition="{loggedIn}">
+    <f:then>
+        <p>Your are an editor!</p>
+
+        <form action="/en/page-1/page-175" target="_top" method="post">
+            <fieldset>
+                <legend>Logout</legend>
+                <div>
+                    <input type="submit" name="submit" value="Logout" />
+                </div>
+                <div class="felogin-hidden">
+                    <input type="hidden" name="logintype" value="logout" />
+                    <input type="hidden" name="pid" value="8" />
+                    <input type="hidden" name="tx_felogin_pi1[noredirect]" value="0" />
+                </div>
+            </fieldset>
+        </form>
+
+        <f:link.action action="index" id="redirectLinkThing" style="visibility: 'collapse'"></f:link.action>
+    </f:then>
+    <f:else>
+        <p>You are a visitor!</p>
+        <f:link.page pageUid="5">Anmelden</f:link.page>
+    </f:else>
+</f:if>
