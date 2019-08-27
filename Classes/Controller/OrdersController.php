@@ -1,0 +1,41 @@
+<?php
+
+namespace MyVendor\SitePackage\Controller;
+
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+
+class OrdersController extends ActionController
+{
+    /**
+     * @var \MyVendor\SitePackage\Domain\Repository\OrderRepository
+     * @inject
+     */
+    private $orderRepository;
+
+    /**
+     * @var \MyVendor\SitePackage\Domain\Repository\PersonRepository
+     * @inject
+     */
+    private $personRepsitory;
+
+    public function indexAction()
+    {
+        $this->view->assign('orders', $this->orderRepository->findAll());
+    }
+
+    public function ajaxAction()
+    {
+        $this->view->assign('orders', $this->orderRepository->findAll());
+    }
+
+    /**
+     * @param \MyVendor\SitePackage\Domain\Model\Order $order
+     * @return void
+     */
+    public function finishAction(\MyVendor\SitePackage\Domain\Model\Order $order)
+    {
+        $this->orderRepository->remove($order);
+
+        $this->redirect('index');
+    }
+}

@@ -9,11 +9,22 @@ defined('TYPO3_MODE') || die('Access denied.');
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
   'MyVendor.SitePackage',
-  'InventoryList',
+  'Productlist',
   [
-    'StoreInventory' => 'index, add, remove, show',
+      'StoreInventory' => 'index, add, remove, show, update, login, register, logout',
   ],
   [
-    'StoreInventory' => 'index, add, remove, show',
+      'StoreInventory' => 'index, add, remove, show, update, login, register, logout',
   ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'MyVendor.SitePackage',
+    'Bestellungen',
+    [
+        'Orders' => 'index, finish, ajax',
+    ],
+    [
+        'Orders' => 'index, finish, ajax',
+    ]
 );

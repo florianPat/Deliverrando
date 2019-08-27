@@ -2,12 +2,8 @@
 
 namespace MyVendor\SitePackage\Controller;
 
-use MyVendor\SitePackage\Domain\Model\Product;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-/**
- *  @package MyVendor\SitePackage\Controller
- */
 class StoreInventoryController extends ActionController
 {
     /**
@@ -16,16 +12,23 @@ class StoreInventoryController extends ActionController
     private $productRepository;
 
     /**
-     * @var \MyVendor\SitePackage\Domain\Repository\DelieverRandoRepository
+     * @var \MyVendor\SitePackage\Domain\Repository\DelieverrandoRepository
+     * @inject
+     * NOTE: Has the same effect as declaring the method injectCategoryRepository
      */
-    private $delieverRandoRepository;
+    private $delieverrandoRepository;
 
     /**
      * @var \MyVendor\SitePackage\Domain\Repository\CategoryRepository
      * @inject
-     * NOTE: Has the same effect as declaring the method injectCategoryRepository
      */
     private $categoryRepository;
+
+    /**
+     * @var \MyVendor\SitePackage\Domain\Repository\PersonRepository
+     * @inject
+     */
+    private $personRepository;
 
     /**
     *  @param \MyVendor\SitePackage\Domain\Repository\ProductRepository $productRepository
@@ -37,22 +40,49 @@ class StoreInventoryController extends ActionController
     }
 
     /**
-     * @param \MyVendor\SitePackage\Domain\Repository\DelieverRandoRepository $delieverRandoRepository
-     * @return void
+     * @return \MyVendor\SitePackage\Domain\Model\Delieverrando
      */
-    public function injectDelieverRandoRepository(\MyVendor\SitePackage\Domain\Repository\DelieverRandoRepository $delieverRandoRepository)
+    private function getDelieverRandoFromLoggedInUser()
     {
-      $this->delieverRandoRepository = $delieverRandoRepository;
+        assert($GLOBALS['TSFE']->fe_user->user !== null);
+        $userGroupUid = $GLOBALS['TSFE']->fe_user->user['uid'];
+        $delieverrandoUid = $this->delieverrandoRepository->findDelieverRandoUid($userGroupUid);
+        $result = $this->delieverrandoRepository->findByUid($delieverrandoUid);
+        assert($result !== null);
+        return $result;
     }
 
-  /**
-   * @param string $messageText
-   * @param \MyVendor\SitePackage\Domain\Model\Product $product
-   * @param array $errores
-   * @return void
-   */
+    /**
+     * @return void
+     */
+    private function addCategoryFromOption()
+    {
+        $allCategories = $this->categoryRepository->findAll();
+        $categoryOptions = [0 => ''];
+        $allCategories->rewind();
+        while($allCategories->valid()) {
+            $it = $allCategories->current();
+
+            $categoryOptions[$it->getUid()] = $it->getName();
+
+            $allCategories->next();
+        }
+        $this->view->assign('categoryOptions', $categoryOptions);
+    }
+
+    /**
+     * @param string $messageText
+     * @param \MyVendor\SitePackage\Domain\Model\Product $product
+     * @param array $errors
+     * @return void
+    */
     public function indexAction($messageText = '', \MyVendor\SitePackage\Domain\Model\Product $product = null, $errors = null)
     {
+        session_start();
+        if(isset($_SESSION['uid'])) {
+            $this->view->assign('personLoggedIn', 'true');
+        }
+
         if($errors !== null) {
             $this->view->assign('errors', $errors);
         }
@@ -67,38 +97,17 @@ class StoreInventoryController extends ActionController
         }
 
         if($GLOBALS['TSFE']->fe_user->user['uid']) {
-            $allCategories = $this->categoryRepository->findAll();
-            $categoryOptions = [0 => ''];
-            $allCategories->rewind();
-            while($allCategories->valid()) {
-              $it = $allCategories->current();
+            $this->addCategoryFromOption();
 
-              $categoryOptions[$it->getUid()] = $it->getName();
+            $userGroupUid = $GLOBALS['TSFE']->fe_user->user['usergroup'];
 
-              $allCategories->next();
-            }
-            $this->view->assign('categoryOptions', $categoryOptions);
+            $delieverrandoUids = $this->delieverrandoRepository->findDelieverRandoUidsForUserGroup($userGroupUid);
+            $products = $this->productRepository->findAllWithDieverRandoUids($delieverrandoUids);
 
-//          $userGroupUid = $GLOBALS['TSFE']->fe_user->user['usergroup'];
-//
-//          $delieverServiceProducts = '';
-//          $delieverServiceProducts .= $this->delieverRandoRepository->findProductsByUserGroup($userGroupUid);
-//          $userGroupName = $this->delieverRandoRepository->findUserGroupName($userGroupUid);
-//
-//          for($subGroup = $this->delieverRandoRepository->findSubGroup($userGroupUid);
-//              $subGroup != -1;
-//              $subGroup = $this->delieverRandoRepository->findSubGroup($subGroup))
-//          {
-//              $delieverServiceProducts .= ',' . $this->delieverRandoRepository->findProductsByUserGroup($subGroup);
-//          }
-//
-//          $products = $this->productRepository->findByUids($delieverServiceProducts);
-//
-//          $this->view->assign('userGroupName', $userGroupName);
-//          $this->view->assign('products', $products);
-            $this->view->assign('products', $this->productRepository->findAll());
+            $this->view->assign('products', $products);
+            $this->view->assign('delieverrandoName', $this->delieverrandoRepository->findDelieverRandoName($delieverrandoUids[0]));
         } else {
-          $this->view->assign('products', $this->productRepository->findAll());
+            $this->view->assign('products', $this->productRepository->findAll());
         }
      }
 
@@ -113,12 +122,15 @@ class StoreInventoryController extends ActionController
 
     /**
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
-     * @return string
+     * @return void
      */
     public function removeAction(\MyVendor\SitePackage\Domain\Model\Product $product)
     {
-        $this->productRepository->remove($product);
-        //NOTE: Druch forward werden die Daten nicht persistet
+        $delieverrando = $this->getDelieverRandoFromLoggedInUser();
+        $delieverrando->removeProduct($product);
+        $this->delieverrandoRepository->update($delieverrando);
+
+        //NOTE: Druch forward werden die Daten nicht persistet (es wird kein neuer request-response cycle erstellt)
         $this->forward('index', null, null, ['messageText' => 'Removed', 'product' => $product]);
     }
 
@@ -144,11 +156,61 @@ class StoreInventoryController extends ActionController
      */
     public function addAction(\MyVendor\SitePackage\Domain\Model\Product $product, $category)
     {
-        $categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $categories->attach($this->categoryRepository->findByUid($category));
-        $product->setCategories($categories);
+        $categoryObj = $this->categoryRepository->findByUid($category);
+        if($categoryObj !== null) {
+            $product->addCategory($categoryObj);
+        } elseif($category !== 0) {
+            //TODO: Show error!
+        }
 
-        $this->productRepository->add($product);
+        $delieverrando = $this->getDelieverRandoFromLoggedInUser();
+        $product->setDelieverrando($delieverrando);
+        $delieverrando->addProduct($product);
+        $this->delieverrandoRepository->update($delieverrando);
+
         $this->forward('index', null, null, ['messageText' => 'Added', 'product' => $product]);
+    }
+
+    /**
+     * @param \MyVendor\SitePackage\Domain\Model\Person $person
+     * @\TYPO3\CMS\Extbase\Annotation\Validate("\MyVendor\SitePackage\Domain\Validator\PersonNamePasswordValidator", param="loginPerson")
+     * @return void
+     */
+    public function loginAction(\MyVendor\SitePackage\Domain\Model\Person $loginPerson)
+    {
+        $person = $this->personRepsitory->findByIdentifier($loginPerson->getName());
+
+        session_start();
+        $_SESSION['uid'] = $person->getUid();
+
+        $this->redirect('index');
+    }
+
+    /**
+     * @return void
+     */
+    public function logoutAction()
+    {
+        session_start();
+        assert(isset($_SESSION['uid']));
+
+        session_destroy();
+
+        $this->redirect('index');
+    }
+
+    /**
+     * @param \MyVendor\SitePackage\Domain\Model\Person $registerPerson
+     * @\TYPO3\CMS\Extbase\Annotation\Validate("\MyVendor\SitePackage\Domain\Validator\PersonValidNameValidator", param="registerPerson")
+     * @return void
+     */
+    public function registerAction(\MyVendor\SitePackage\Domain\Model\Person $registerPerson)
+    {
+        $this->personRepository->add($registerPerson);
+
+        session_start();
+        $_SESSION['uid'] = $registerPerson->getUid();
+
+        $this->redirect('index');
     }
 }

@@ -10,44 +10,50 @@ class Product extends AbstractEntity
     *  @var string
     * @\TYPO3\CMS\Extbase\Annotation\Validate("StringLength", options={"minimum": 3, "maximum": 30})
     */
-    protected $name = '';
+    protected $name;
 
     /**
     *  @var string
+     * @\TYPO3\CMS\Extbase\Annotation\Validate("StringLength", options={"maximum": 100})
     */
-    protected $description = '';
+    protected $description;
 
     /**
     *  @var int
     */
-    protected $quantity = 0;
+    protected $quantity;
 
     /**
     * @var int
      * @\TYPO3\CMS\Extbase\Annotation\Validate("MyVendor\SitePackage\Domain\Validator\DelieveryTimeValidator")
     */
-    protected $delieveryTime = 0;
+    protected $delieveryTime;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\MyVendor\SitePackage\Domain\Model\Category>
+     * @TYPO3\CMS\Extbase\Annotation\ORM\Lazy
+     * @TYPO3\CMS\Extbase\Annotation\ORM\Cascade("remove")
      */
-    protected $categories = null;
+    protected $categories;
+
+    /**
+     * @var \MyVendor\SitePackage\Domain\Model\Delieverrando $delieverrando
+     */
+    protected $delieverrando;
 
     /**
     *  @param string $name
     *  @param string $description
     *  @param int $quantity
     *  @param int $§delieveryTime
-    *  @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\MyVendor\SitePackage\Domain\Model\Category> $categories
     */
-    public function __construct($name = '', $description = '', $quantity = 0, $delieveryTime = 0,
-                              \TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories = null)
+    public function __construct($name = '', $description = '', $quantity = 0, $delieveryTime = 0)
     {
         $this->name = $name;
         $this->description = $description;
         $this->quantity = $quantity;
         $this->delieveryTime = $delieveryTime;
-        $this->categories = $categories;
+        $this->categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
 
     /**
@@ -91,11 +97,11 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\MyVendor\SitePackage\Domain\Model\Category>
+     * @return \MyVendor\SitePackage\Domain\Model\Delieverrando
      */
-    public function getClonedCategories()
+    public function getDelieverrando()
     {
-        return clone $this->categories;
+        return $this->delieverrando;
     }
 
     /**
@@ -159,5 +165,14 @@ class Product extends AbstractEntity
     public function removeCategory(\MyVendor\SitePackage\Domain\Model\Category $category)
     {
         $this->categories->detach($category);
+    }
+
+    /**
+     * @param \MyVendor\SitePackage\Domain\Model\Delieverrando $delieverrando
+     * @return void
+     */
+    public function setDelieverrando(\MyVendor\SitePackage\Domain\Model\Delieverrando $delieverrando)
+    {
+        $this->delieverrando = $delieverrando;
     }
 }

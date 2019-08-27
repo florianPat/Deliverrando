@@ -1,4 +1,4 @@
-<h2>{userGroupName}</h2>
+<h2>{delieverrandoName}</h2>
 
 <table border="1" cellspacing="1" cellpadding="5">
     <tr>
@@ -26,6 +26,15 @@
                     </f:if>
                 </f:for>
             </td>
+            <f:if condition="personLoggedIn">
+                <f:then>
+                    <td align="top">
+                        <f:link.action>
+                            <img src="typo3conf/ext/site_package/Resources/Public/Images/plus.jpg" width="20px"/>
+                        </f:link.action>
+                    </td>
+                </f:then>
+            </f:if>
             <f:security.ifAuthenticated>
                 <td algin="top">
                     <f:link.action controller="StoreInventory" action="remove" arguments="{product: product}">

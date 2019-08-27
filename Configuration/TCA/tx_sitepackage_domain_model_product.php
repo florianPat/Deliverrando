@@ -3,28 +3,29 @@
 // So sieht der Table im Backend aus!
 return [
   'ctrl' => [
-    'title' => 'LLL:EXT:site_package/Resources/Private/Language/locallang_db.xlf:tx_sitepackage_domain_model_product',
+    'title' => 'Product',
     'label' => 'name',
   ],
   'columns' => [
     'name' => [
-      'label' => 'LLL:EXT:site_package/Resources/Private/Language/locallang_db.xlf:tx_sitepackage_domain_model_product.name',
+      'label' => 'Name',
       'config' => [
           'type' => 'input',
           'size' => '20',
-          'eval' => 'trim',
+          'eval' => 'trim,required',
+          'max' => 30,
       ],
     ],
     'description' => [
-      'label' => 'LLL:EXT:site_package/Resources/Private/Language/locallang_db.xlf:tx_sitepackage_domain_model_product.description',
+      'label' => 'Description',
       'config' => [
         'type' => 'text',
         'eval' => 'trim',
-        'max' => '30',
+        'max' => '100',
       ],
     ],
     'quantity' => [
-      'label' => 'LLL:EXT:site_package/Resources/Private/Language/locallang_db.xlf:tx_sitepackage_domain_model_product.quantity',
+      'label' => 'Quantity',
       'config' => [
         'type' => 'input',
         'size' => '4',
@@ -37,6 +38,10 @@ return [
           'type' => 'input',
           'size' => '3',
           'eval' => 'int',
+          'range' => [
+              'lower' => 0,
+              'upper' => 1000,
+          ],
       ],
     ],
     'categories' => [

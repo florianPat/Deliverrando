@@ -6,7 +6,7 @@ lib.dynamicContent {
       // page id of current page
       pidInList = this
 
-      Was für Attribute es gibt kann man (glaub ich) hier nachschauen: https://github.com/TYPO3/TYPO3.CMS/blob/master/typo3/sysext/frontend/Configuration/TCA/tt_content.php
+      // Was für Attribute es gibt kann man (glaub ich) hier nachschauen: https://github.com/TYPO3/TYPO3.CMS/blob/master/typo3/sysext/frontend/Configuration/TCA/tt_content.php
       where = (colPos = 0)
 
       orderBy = sorting

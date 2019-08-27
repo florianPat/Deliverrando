@@ -3,19 +3,17 @@ defined('TYPO3_MODE') || die();
 
 (function()
 {
-  // NOTE: Dadurch kann man das Template im Backend auswählen
-  $extensionKey = 'site_package';
+    // NOTE: Dadurch kann man das Template im Backend auswählen
 
-  \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-     $extensionKey,
-     'Configuration/TypoScript',
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+     'site_package',
+     'Configuration/TypoScript/Default',
      'Sitepackage'
-  );
+    );
 
-  // ... oder die PageTSConfig
-  \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerPageTSConfigFile(
-    $extensionKey,
-    'Configuration/TSConfig/Test.tsconfig',
-    'Test'
-  );
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+        'site_package',
+        'Configuration/TypoScript/WithoutSchnickSchnack',
+        'WithoutSchnickSchnack'
+    );
 })();

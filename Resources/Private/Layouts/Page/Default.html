@@ -26,7 +26,7 @@
           <f:if condition="{mainnavigationItem.children}">
             <f:then>
                 <f:for each="{mainnavigationItem.children}" as="childItem">
-                  <li class="nav-item {mainnavigationItem.title}Child" style="background-color: #0F0F0F; visibility: collapse">
+                  <li class="nav-item {mainnavigationItem.title}Child" style="background-color: #0F0F0F; display: none">
                       <a class="nav-link"
                          href="{childItem.link}"
                          target="{childItem.target}"

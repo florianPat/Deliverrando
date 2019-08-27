@@ -5,6 +5,12 @@
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
   'MyVendor.SitePackage',
-  'InventoryList',
-  'The store inventory list'
+  'Productlist',
+  'Die Produktliste + Bestellungen'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'MyVendor.SitePackage',
+    'Bestellungen',
+    'Die Bestellungen der Kunden'
 );

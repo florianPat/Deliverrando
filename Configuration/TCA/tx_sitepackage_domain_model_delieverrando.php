@@ -2,7 +2,7 @@
 
 return [
     'ctrl' => [
-        'title' => 'DelieverRando',
+        'title' => 'Delieverrando',
         'label' => 'name',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -14,7 +14,8 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => '20',
-                'eval' => 'trim',
+                'eval' => 'alpha,trim,required',
+                'max' => '20',
             ],
         ],
         'products' => [
@@ -22,7 +23,7 @@ return [
             'config' => [
                 'type' => 'inline',
                 'foreign_table' => 'tx_sitepackage_domain_model_product',
-                'foreign_field' => 'delieverRando',
+                'foreign_field' => 'delieverrando',
             ],
         ],
         'userGroup' => [

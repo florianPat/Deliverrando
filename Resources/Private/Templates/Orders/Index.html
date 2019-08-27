@@ -1,0 +1,29 @@
+<f:link.action pageUid="12" action="ajax" controller="Orders" id="ajaxUrl"></f:link.action>
+
+<div id="orderDisplay">
+    <div class="card-deck">
+        <f:for each="{orders}" as="order">
+            <div class="card">
+                <h2 class="card-header">Order id: {order.uid}</h2>
+                <div class="card-body">
+                    <h4 class="card-subtitle">Person</h4>
+                    <p class="card-text">Name: {order.person.name}</p>
+                    <p class="card-text">Address: {order.person.address}</p>
+                    <p class="card-text">Telephone number: {order.person.telephonenumber}</p>
+                    <br />
+                    <div class="card-header">
+                        Products
+                    </div>
+                    <ul class="list-group">
+                        <f:for each="{order.products}" as="product">
+                            <li class="list-group-item">{product.name}</li>
+                        </f:for>
+                    </ul>
+                </div>
+                <div class="card-footer text-muted">
+                    <f:link.action action="finish" arguments="{order: order}" class="card-link">Finished!</f:link.action>
+                </div>
+            </div>
+        </f:for>
+    </div>
+</div>

@@ -4,7 +4,7 @@ namespace MyVendor\SitePackage\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-class DelieverRando extends AbstractEntity
+class Delieverrando extends AbstractEntity
 {
     /**
      * @var string $name
@@ -13,29 +13,27 @@ class DelieverRando extends AbstractEntity
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\MyVendor\SitePackage\Domain\Model\Product>
-     * This tells extbase to only load the objects if they are needed, and not to load all child objects wich are associated with DelieverRando
-     * (this is called Eager-Loading)
+     * This tells extbase to only load the objects if they are needed, and not to load all child objects wich are associated with Delieverrando
+     * (that would be called Eager-Loading)
      * @TYPO3\CMS\Extbase\Annotation\ORM\Lazy
-     * This tells extbase to delete the products if the DelieverRando gets deleted
+     * This tells extbase to delete the products if the Delieverrando gets deleted
      * @TYPO3\CMS\Extbase\Annotation\ORM\Cascade("remove")
      */
     protected $products;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup
+     * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup $userGroup
      */
     protected $userGroup;
 
     /**
      * @param string $name
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\MyVendor\SitePackage\Domain\Model\Product> $products
      * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup $userGroup
      */
-    public function __construct(string $name = '', \TYPO3\CMS\Extbase\Persistence\ObjectStorage $products = null,
-                                \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup $userGroup = null)
+    public function __construct($name = '', \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup $userGroup = null)
     {
         $this->name = $name;
-        $this->products = $products;
+        $this->products = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
         $this->userGroup = $userGroup;
     }
 
@@ -88,7 +86,7 @@ class DelieverRando extends AbstractEntity
       */
     public function getProducts()
     {
-        return clone $this->products;
+        return $this->products;
     }
 
     /**
