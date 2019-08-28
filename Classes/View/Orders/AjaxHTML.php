@@ -21,7 +21,7 @@ class AjaxHTML extends AbstractView
                     '<div class="card-body">' .
                         '<h4 class="card-subtitle">Person</h4>' .
                         '<p class="card-text">Name: ' . $order->getPerson()->getName() . '</p>' .
-                        '<p class="card-text">Address: ' . $order->getPerson()->GetName() . '</p>' .
+                        '<p class="card-text">Address: ' . $order->getPerson()->getAddress() . '</p>' .
                         '<p class="card-text">Telephone number: ' . $order->getPerson()->getTelephonenumber() . '</p>' .
                         '<br />' .
                         '<div class="card-header">' .
