@@ -14,7 +14,17 @@ page {
     // Renders the body part of the page
     10 = FLUIDTEMPLATE
     10 {
-        templateName = Default
+		templateName = TEXT
+		templateName.stdWrap.cObject = CASE
+		templateName.stdWrap.cObject {
+			key.field = backend_layout
+
+			pagets__test = TEXT
+			pagets__test.value = TwoColumns
+
+			default = TEXT
+			default.value = Default
+		}
 
         dataProcessing {
             10 = TYPO3\CMS\Frontend\DataProcessing\MenuProcessor
