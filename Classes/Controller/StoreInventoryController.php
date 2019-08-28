@@ -73,18 +73,16 @@ class StoreInventoryController extends ActionController
     /**
      * @param string $messageText
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
-     * @param array $errors
      * @return void
     */
-    public function indexAction($messageText = '', \MyVendor\SitePackage\Domain\Model\Product $product = null, $errors = null)
+    public function indexAction($messageText = '', \MyVendor\SitePackage\Domain\Model\Product $product = null)
     {
         session_start();
         if(isset($_SESSION['uid'])) {
             $this->view->assign('personLoggedIn', 'true');
         }
-
-        if($errors !== null) {
-            $this->view->assign('errors', $errors);
+        if(isset($_SESSION['lastAction'])) {
+            $this->view->assign('lastAction', $_SESSION['lastAction']);
         }
 
         if($messageText !== '') {
@@ -173,15 +171,15 @@ class StoreInventoryController extends ActionController
 
     /**
      * @param \MyVendor\SitePackage\Domain\Model\Person $person
-     * @\TYPO3\CMS\Extbase\Annotation\Validate("\MyVendor\SitePackage\Domain\Validator\PersonNamePasswordValidator", param="loginPerson")
+     * @\TYPO3\CMS\Extbase\Annotation\Validate("\MyVendor\SitePackage\Domain\Validator\PersonNamePasswordValidator", param="person")
      * @return void
      */
-    public function loginAction(\MyVendor\SitePackage\Domain\Model\Person $loginPerson)
+    public function loginAction(\MyVendor\SitePackage\Domain\Model\Person $person)
     {
-        $person = $this->personRepsitory->findByIdentifier($loginPerson->getName());
+        $loginPerson = $this->personRepository->findByName($person->getName());
 
         session_start();
-        $_SESSION['uid'] = $person->getUid();
+        $_SESSION['uid'] = $loginPerson->getUid();
 
         $this->redirect('index');
     }
@@ -193,6 +191,7 @@ class StoreInventoryController extends ActionController
     {
         session_start();
         assert(isset($_SESSION['uid']));
+        unset($_SESSION['uid']);
 
         session_destroy();
 
@@ -201,16 +200,34 @@ class StoreInventoryController extends ActionController
 
     /**
      * @param \MyVendor\SitePackage\Domain\Model\Person $registerPerson
-     * @\TYPO3\CMS\Extbase\Annotation\Validate("\MyVendor\SitePackage\Domain\Validator\PersonValidNameValidator", param="registerPerson")
+     * @\TYPO3\CMS\Extbase\Annotation\Validate("\MyVendor\SitePackage\Domain\Validator\PersonValidNameValidator", param="person")
      * @return void
      */
-    public function registerAction(\MyVendor\SitePackage\Domain\Model\Person $registerPerson)
+    public function registerAction(\MyVendor\SitePackage\Domain\Model\Person $person)
     {
-        $this->personRepository->add($registerPerson);
+        $person->setPassword(password_hash($person->getPassword(), PASSWORD_DEFAULT));
+        $this->personRepository->add($person);
+
+        $persistenceManager = $this->objectManager->get("TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager");
+        $persistenceManager->persistAll();
 
         session_start();
-        $_SESSION['uid'] = $registerPerson->getUid();
+        $_SESSION['uid'] = $person->getUid();
 
         $this->redirect('index');
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function initializeAction()
+    {
+        $actionName = $this->resolveActionMethodName();
+        if($actionName !== 'indexAction') {
+            session_start();
+
+            $_SESSION['lastAction'] = $actionName;
+        }
     }
 }

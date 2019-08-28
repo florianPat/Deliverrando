@@ -14,16 +14,16 @@ class PersonNamePasswordValidator extends AbstractValidator
 
     protected function isValid($value)
     {
-        $person = $this->personRepository->findByIdentifier($value->getName());
+        $person = $this->personRepository->findByName($value->getName());
 
         if($person !== null) {
             if(password_verify($value->getPassword(), $person->getPassword())) {
                 return;
             } else {
-                $this->addError("This is the wrong password!");
+                $this->addError("person.password:This is the wrong password!", 738273);
             }
         } else {
-            $this->addError("The name is not registered yet!", 3928395);
+            $this->addError("person.name:The name is not registered yet!", 3928395);
         }
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+//TODO: Delete this??
 return [
     'ctrl' => [
         'title' => 'Person',
@@ -38,7 +39,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => '20',
-                'eval' => 'required,saltedPassword,password',
+                'eval' => 'required,password',
                 'max' => 30,
             ],
         ],

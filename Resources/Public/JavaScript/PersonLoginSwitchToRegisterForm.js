@@ -8,3 +8,10 @@ function switchToRegisterForm()
     registerForm.style.display = 'inline';
     switchToRegisterText.style.display = 'none';
 }
+
+(function(){
+    let lastAction = document.getElementById('lastAction');
+    if(lastAction !== null && lastAction.innerHTML === 'registerAction') {
+        switchToRegisterForm();
+    }
+})();

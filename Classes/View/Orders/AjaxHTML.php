@@ -4,6 +4,8 @@ namespace MyVendor\SitePackage\View\Orders;
 
 use TYPO3\CMS\Extbase\Mvc\View\AbstractView;
 
+//NOTE: This render method gets called if no template for the ajax action in the controller (folder) Orders is found
+// One would also name it JSON to output json (it must be one of the formats that TYPO3 supports)
 class AjaxHTML extends AbstractView
 {
     public function render()

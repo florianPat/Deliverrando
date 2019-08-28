@@ -14,10 +14,10 @@ class PersonValidNameValidator extends AbstractValidator
 
     protected function isValid($value)
     {
-        if($this->personRepository->findByIdentifier($value->getName()) === null) {
+        if($this->personRepository->findByName($value->getName()) === null) {
             return;
         } else {
-            $this->addError("The name is already registered!", 2839283);
+            $this->addError("person.name:The name is already registered!", 2839283);
         }
     }
 }

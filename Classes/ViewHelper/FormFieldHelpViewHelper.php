@@ -2,10 +2,10 @@
 
 namespace MyVendor\SitePackage\ViewHelper;
 
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+//NOTE: The -TagBased- is required so that HTML does not get escaped!
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
-class FormFieldHelpViewHelper extends AbstractViewHelper
+class FormFieldHelpViewHelper extends AbstractTagBasedViewHelper
 {
     /**
      * @return void
@@ -16,16 +16,29 @@ class FormFieldHelpViewHelper extends AbstractViewHelper
         $this->registerArgument("idPrefix", "string", "The string to add to the id of the tag and the p tag", true);
     }
 
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function render()
     {
-        $result = $arguments['tag'];
+        $result = $this->arguments['tag'];
+        $endTag = '/>';
+
+        assert(strncmp($result, '<', 1) == 0);
 
         $tagEnd = '/>';
         $endTagPos = strrpos($result, $tagEnd);
-        $fullTagSize = strlen($result);
-        $tagEndSize = strlen($tagEnd);
-        assert($endTagPos == (strlen($result) - strlen($tagEnd)));
-        $result = substr($result, 0, $endTagPos);
+        if($endTagPos !== false) {
+            $fullTagSize = strlen($result);
+            $tagEndSize = strlen($tagEnd);
+            assert($endTagPos == (strlen($result) - strlen($tagEnd)));
+            $result = substr($result, 0, $endTagPos);
+        } else {
+            $firstSpace = strpos($result, ' ');
+            $tagName = substr($result, 1, $firstSpace - 1);
+            $endTag = '></' . $tagName . '>';
+            $closeingOpenTag = strpos($result, '>');
+            //NOTE: This does not work because of htmlspecialchars-encoding stuff
+            //assert(strcmp(substr($result, $closeingOpenTag, 3), '></') == 0);
+            $result = substr($result, 0, $closeingOpenTag);
+        }
 
         $nameAttributeText = 'name="';
         $nameArgumentStartPos = strpos($result, $nameAttributeText);
@@ -44,10 +57,12 @@ class FormFieldHelpViewHelper extends AbstractViewHelper
         assert($propertyNameEndPos < strlen($result));
         $propertyName = substr($result, $propertyNameStartPos, $propertyNameEndPos - $propertyNameStartPos);
 
-        $idPrefix = 'formErr_' . $arguments['idPrefix'];
+        $placeholderName = ucfirst($propertyName);
+
+        $idPrefix = 'formErr_' . $this->arguments['idPrefix'] . '_';
         $id = $idPrefix . $className . '.' . $propertyName;
 
-        $result = sprintf('%s id="%s"><p id="msg_%s"></p> <br />', $result, $id, $id);
+        $result = sprintf('%s placeholder="%s" id="%s" %s <p id="msg_%s"></p> <br />', $result, $placeholderName, $id, $endTag, $id);
 
         return $result;
     }
