@@ -14,6 +14,9 @@ class DelieverrandoRepository extends Repository
      */
     public function findDelieverRandoUid($userGroupUid)
     {
+        //NOTE: It would be easier if I just use this function. But I can not do it, because the table column has to be named in snake_case
+        //return $this->findOneByUserGroup($userGroupUid)->getUid();
+
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_sitepackage_domain_model_delieverrando');
 
         $statement = $queryBuilder->select('uid')->from('tx_sitepackage_domain_model_delieverrando')->where(

@@ -12,20 +12,19 @@ class OrdersController extends ActionController
      */
     private $orderRepository;
 
-    /**
-     * @var \MyVendor\SitePackage\Domain\Repository\PersonRepository
-     * @inject
-     */
-    private $personRepsitory;
+    private function getToDisplayOrders()
+    {
+        return $this->orderRepository->findAll();
+    }
 
     public function indexAction()
     {
-        $this->view->assign('orders', $this->orderRepository->findAll());
+        $this->view->assign('orders', $this->getToDisplayOrders());
     }
 
     public function ajaxAction()
     {
-        $this->view->assign('orders', $this->orderRepository->findAll());
+        $this->view->assign('orders', $this->getToDisplayOrders());
     }
 
     /**

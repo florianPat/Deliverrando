@@ -2,7 +2,10 @@
 
 namespace MyVendor\SitePackage\Controller;
 
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class StoreInventoryController extends ActionController
 {
@@ -44,8 +47,8 @@ class StoreInventoryController extends ActionController
      */
     private function getDelieverRandoFromLoggedInUser()
     {
-        assert($GLOBALS['TSFE']->fe_user->user !== null);
-        $userGroupUid = $GLOBALS['TSFE']->fe_user->user['uid'];
+        $userGroupUid = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'id');
+        assert($userGroupUid !== null);
         $delieverrandoUid = $this->delieverrandoRepository->findDelieverRandoUid($userGroupUid);
         $result = $this->delieverrandoRepository->findByUid($delieverrandoUid);
         assert($result !== null);
@@ -60,13 +63,11 @@ class StoreInventoryController extends ActionController
         $allCategories = $this->categoryRepository->findAll();
         $categoryOptions = [0 => ''];
         $allCategories->rewind();
-        while($allCategories->valid()) {
-            $it = $allCategories->current();
 
+        foreach($allCategories as $it) {
             $categoryOptions[$it->getUid()] = $it->getName();
-
-            $allCategories->next();
         }
+
         $this->view->assign('categoryOptions', $categoryOptions);
     }
 
@@ -77,12 +78,11 @@ class StoreInventoryController extends ActionController
     */
     public function indexAction($messageText = '', \MyVendor\SitePackage\Domain\Model\Product $product = null)
     {
-        session_start();
-        if(isset($_SESSION['uid'])) {
+        if($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid') !== null) {
             $this->view->assign('personLoggedIn', 'true');
         }
-        if(isset($_SESSION['lastAction'])) {
-            $this->view->assign('lastAction', $_SESSION['lastAction']);
+        if($GLOBALS['TSFE']->fe_user->getKey('ses', 'lastAction') !== null) {
+            $this->view->assign('lastAction', $GLOBALS['TSFE']->fe_user->getKey('ses', 'lastAction'));
         }
 
         if($messageText !== '') {
@@ -90,11 +90,11 @@ class StoreInventoryController extends ActionController
             $this->view->assign("messageText", $messageText);
             $this->view->assign('messageProduct', $product);
 
-            $persistenceManager = $this->objectManager->get("TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager");
+            $persistenceManager = $this->objectManager->get(PersistenceManager::class);
             $persistenceManager->persistAll();
         }
 
-        if($GLOBALS['TSFE']->fe_user->user['uid']) {
+        if($GLOBALS['TSFE']->loginUser) {
             $this->addCategoryFromOption();
 
             $userGroupUid = $GLOBALS['TSFE']->fe_user->user['usergroup'];
@@ -178,8 +178,7 @@ class StoreInventoryController extends ActionController
     {
         $loginPerson = $this->personRepository->findByName($person->getName());
 
-        session_start();
-        $_SESSION['uid'] = $loginPerson->getUid();
+        $GLOBALS['TSFE']->fe_user->setKey('ses', 'uid', $loginPerson->getUid());
 
         $this->redirect('index');
     }
@@ -189,11 +188,7 @@ class StoreInventoryController extends ActionController
      */
     public function logoutAction()
     {
-        session_start();
-        assert(isset($_SESSION['uid']));
-        unset($_SESSION['uid']);
-
-        session_destroy();
+        $GLOBALS['TSFE']->fe_user->setKey('ses', 'uid', null);
 
         $this->redirect('index');
     }
@@ -211,8 +206,7 @@ class StoreInventoryController extends ActionController
         $persistenceManager = $this->objectManager->get("TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager");
         $persistenceManager->persistAll();
 
-        session_start();
-        $_SESSION['uid'] = $person->getUid();
+        $GLOBALS['TSFE']->fe_user->setKey('ses','uid', $person->getUid());
 
         $this->redirect('index');
     }
@@ -225,9 +219,8 @@ class StoreInventoryController extends ActionController
     {
         $actionName = $this->resolveActionMethodName();
         if($actionName !== 'indexAction') {
-            session_start();
-
-            $_SESSION['lastAction'] = $actionName;
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'lastAction', $actionName);
+            $GLOBALS['TSFE']->fe_user->storeSessionData();
         }
     }
 }

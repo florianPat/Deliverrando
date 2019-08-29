@@ -10,8 +10,9 @@ class DelieveryTimeValidator extends AbstractValidator
     {
         if(is_integer($value) && $value > 0 && $value <= 1000) {
             return;
-        } else {
-            $this->addError('The quantity was not a value between 0 and 1000.', 5009832);
         }
+
+        $this->addError('The quantity was not a value between 0 and 1000.', 5009832);
+
     }
 }

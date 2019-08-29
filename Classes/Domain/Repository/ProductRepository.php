@@ -16,7 +16,7 @@ class ProductRepository extends Repository
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findAllWithDieverRandoUids($uids)
+    public function findAllWithDieverRandoUids(array $uids)
     {
         $query = $this->createQuery();
         $query->matching($query->in('delieverrando', $uids));

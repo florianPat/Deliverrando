@@ -56,11 +56,7 @@ page {
 	 	bootstrap = https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js
 		bootstrap.external = 1
 
-		navbar = EXT:site_package/Resources/Public/JavaScript/Navbar.js
-		ShowFormValidationError = EXT:site_package/Resources/Public/JavaScript/ShowFormValidationError.js
-		ShowOperationMsg = EXT:site_package/Resources/Public/JavaScript/ShowOperationMsg.js
-		PersonLoginSwitchToRegisterForm = EXT:site_package/Resources/Public/JavaScript/PersonLoginSwitchToRegisterForm.js
-		OrdersAjax = EXT:site_package/Resources/Public/JavaScript/OrdersAjax.js
+		main = EXT:site_package/Resources/Public/JavaScript/main.js
 	 }
 
 	 config {
