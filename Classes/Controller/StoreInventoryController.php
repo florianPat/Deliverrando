@@ -34,6 +34,12 @@ class StoreInventoryController extends ActionController
     private $personRepository;
 
     /**
+     * @var \MyVendor\SitePackage\Domain\Repository\OrderRepository
+     * @inject
+     */
+    private $orderRepository;
+
+    /**
     *  @param \MyVendor\SitePackage\Domain\Repository\ProductRepository $productRepository
     *  @return void
     */
@@ -83,6 +89,16 @@ class StoreInventoryController extends ActionController
         }
         if($GLOBALS['TSFE']->fe_user->getKey('ses', 'lastAction') !== null) {
             $this->view->assign('lastAction', $GLOBALS['TSFE']->fe_user->getKey('ses', 'lastAction'));
+        }
+        if($GLOBALS['TSFE']->fe_user->getKey('ses', 'orderProducts') !== null) {
+            $sesOrderProducts = $GLOBALS['TSFE']->fe_user->getKey('ses', 'orderProducts');
+            $renderOrderProducts = [];
+            foreach($sesOrderProducts as $key => $it) {
+                $product = $this->productRepository->findByUid($key);
+                assert($product !== null);
+                array_push($renderOrderProducts, $product->getName());
+            }
+            $this->view->assign('orderProducts', $renderOrderProducts);
         }
 
         if($messageText !== '') {
@@ -220,7 +236,48 @@ class StoreInventoryController extends ActionController
         $actionName = $this->resolveActionMethodName();
         if($actionName !== 'indexAction') {
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'lastAction', $actionName);
-            $GLOBALS['TSFE']->fe_user->storeSessionData();
         }
+    }
+
+    /**
+     * @param \MyVendor\SitePackage\Domain\Model\Product $product
+     * @return void
+     */
+    public function startOrderAction(\MyVendor\SitePackage\Domain\Model\Product $product)
+    {
+        assert($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid') !== null);
+
+        $orders = $GLOBALS['TSFE']->fe_user->getKey('ses', 'orderProducts');
+
+        if($orders !== null) {
+            $orders[$product->getUid()] += 1;
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'orderProducts', $orders);
+        } else {
+            $orders = [$product->getUid() => 1];
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'orderProducts', $orders);
+        }
+
+        $this->redirect('index');
+    }
+
+    /**
+     * @param array $products
+     * @return void
+     */
+    public function endOrderAction(array $products)
+    {
+        assert($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid') !== null);
+
+        $loggedInPerson = $this->personRepository->findByUid($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid'));
+        assert($loggedInPerson !== null);
+        $order = new \MyVendor\SitePackage\Domain\Model\Order($loggedInPerson);
+
+        foreach($products as $productUid) {
+            $product = $this->productRepository->findByUid($productUid);
+            assert($product !== null);
+            $order->addProduct($product);
+        }
+
+        $this->orderRepository->add($order);
     }
 }

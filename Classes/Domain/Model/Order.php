@@ -16,9 +16,13 @@ class Order extends AbstractEntity
      */
     protected $products;
 
-    public function __construct()
+    /**
+     * @param \MyVendor\SitePackage\Domain\Model\Person $person
+     */
+    public function __construct(\MyVendor\SitePackage\Domain\Model\Person $person = null)
     {
-        $products = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->person = $person;
+        $this->products = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
 
     /**
