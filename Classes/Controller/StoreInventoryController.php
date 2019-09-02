@@ -3,6 +3,7 @@
 namespace MyVendor\SitePackage\Controller;
 
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -216,7 +217,9 @@ class StoreInventoryController extends ActionController
      */
     public function registerAction(\MyVendor\SitePackage\Domain\Model\Person $person)
     {
-        $person->setPassword(password_hash($person->getPassword(), PASSWORD_DEFAULT));
+        $passwordHash = GeneralUtility::makeInstance(PasswordHashFactory::class)->getDefaultHashInstance('FE');
+
+        $person->setPassword($passwordHash->getHashedPassword($person->getPassword()));
         $this->personRepository->add($person);
 
         $persistenceManager = $this->objectManager->get("TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager");

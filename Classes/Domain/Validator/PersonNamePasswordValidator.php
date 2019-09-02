@@ -2,6 +2,8 @@
 
 namespace MyVendor\SitePackage\Domain\Validator;
 
+use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 class PersonNamePasswordValidator extends AbstractValidator
@@ -17,7 +19,7 @@ class PersonNamePasswordValidator extends AbstractValidator
         $person = $this->personRepository->findByName($value->getName());
 
         if($person !== null) {
-            if(password_verify($value->getPassword(), $person->getPassword())) {
+            if(GeneralUtility::makeInstance(PasswordHashFactory::class)->getDefaultHashInstance("FE")->checkPassword($value->getPassword(), $person->getPassword())) {
                 return;
             } else {
                 $this->addError("person.password:This is the wrong password!", 738273);
