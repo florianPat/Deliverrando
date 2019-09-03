@@ -277,7 +277,7 @@ class StoreInventoryController extends ActionController
         $deliverytime = 0;
 
         for($i = 0; isset($_POST['products' . $i]); ++$i) {
-            $product = $this->productRepository->findOneByName($_POST['products' . $i]);
+            $product = $this->productRepository->findOneByName(GeneralUtility::_POST('products' . $i));
             assert($product !== null);
 
             if($product->getDeliverytime() > $deliverytime) {
