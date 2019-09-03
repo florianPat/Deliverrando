@@ -11,6 +11,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 // One would also name it JSON to output json (it must be one of the formats that TYPO3 supports)
 class AjaxHTML extends AbstractView
 {
+    /**
+     * @return string
+     */
     public function render()
     {
         assert(isset($this->variables['orders']));

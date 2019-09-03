@@ -18,6 +18,7 @@ return [
             'label' => 'Products',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectMultipleSideBySide',
                 'size' => '10',
                 'minitems' => '1',
                 'multiple' => '0',
@@ -26,8 +27,20 @@ return [
                 'MM' => 'tx_sitepackage_order_product_mm',
             ],
         ],
+        'deliverytime' => [
+            'label' => 'Delievery time',
+            'config' => [
+                'type' => 'input',
+                'size' => '3',
+                'eval' => 'int',
+                'range' => [
+                    'lower' => 0,
+                    'upper' => 1000,
+                ],
+            ],
+        ],
     ],
     'types' => [
-        '0' => ['showitem' => 'person, products'],
+        '0' => ['showitem' => 'person, products, deliverytime'],
     ],
 ];

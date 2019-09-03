@@ -6,6 +6,8 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class StoreInventoryController extends ActionController
@@ -174,8 +176,6 @@ class StoreInventoryController extends ActionController
         $categoryObj = $this->categoryRepository->findByUid($category);
         if($categoryObj !== null) {
             $product->addCategory($categoryObj);
-        } elseif($category !== 0) {
-            //TODO: Show error!
         }
 
         $delieverrando = $this->getDelieverRandoFromLoggedInUser();
@@ -264,10 +264,9 @@ class StoreInventoryController extends ActionController
     }
 
     /**
-     * @param array $products
      * @return void
      */
-    public function endOrderAction(array $products)
+    public function endOrderAction()
     {
         assert($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid') !== null);
 
@@ -275,12 +274,38 @@ class StoreInventoryController extends ActionController
         assert($loggedInPerson !== null);
         $order = new \MyVendor\SitePackage\Domain\Model\Order($loggedInPerson);
 
-        foreach($products as $productUid) {
-            $product = $this->productRepository->findByUid($productUid);
+        $deliverytime = 0;
+
+        for($i = 0; isset($_POST['products' . $i]); ++$i) {
+            $product = $this->productRepository->findOneByName($_POST['products' . $i]);
             assert($product !== null);
+
+            if($product->getDeliverytime() > $deliverytime) {
+                $deliverytime = $product->getDeliverytime();
+            }
+
             $order->addProduct($product);
         }
+        $order->setDeliverytime($deliverytime);
 
         $this->orderRepository->add($order);
+
+        $email = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+        $email->setSubject("Delieverrando order");
+        $email->setFrom(['order@delieverrando.com' => 'Delieverrando']);
+        $email->setTo(['bla@gmail.com' => $loggedInPerson->getName()]);
+        $email->setBody('You ordered food!\nIt will be delivered in: ' . $order->getDeliverytime() . ' minutes!');
+        $email->send();
+
+        $this->forward('finishOrder', null, null, ['order' => $order]);
+    }
+
+    /**
+     * @param \MyVendor\SitePackage\Domain\Model\Order $order
+     * @return void
+     */
+    public function finishOrderAction(\MyVendor\SitePackage\Domain\Model\Order $order)
+    {
+        $this->view->assign('deliverytime', $order->getDeliverytime());
     }
 }

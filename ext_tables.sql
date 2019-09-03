@@ -4,7 +4,7 @@ CREATE TABLE tx_sitepackage_domain_model_product (
   name varchar(255) DEFAULT '' NOT NULL,
   description varchar(255) DEFAULT '' NOT NULL,
   quantity int(11) DEFAULT 0 NOT NULL,
-  delieveryTime int(11) DEFAULT 0 NOT NULL,
+  deliverytime int(11) DEFAULT 0 NOT NULL,
   --NOTE: foreign uid for 1-n relation
   delieverrando int(11) DEFAULT 0 NOT NULL,
   --NOTE: categories objectStorage-member (its a counter in the db)
@@ -93,6 +93,7 @@ CREATE TABLE tx_sitepackage_domain_model_order(
     person int(11) unsigned DEFAULT 0 NOT NULL,
     --products object-storage in domain, counter in db
     products int(11) unsigned DEFAULT 0 NOT NULL,
+    deliverytime int(11) DEFAULT 0 NOT NULL,
 
     crdate int(11) DEFAULT 0 NOT NULL,
     tstamp int(11) unsigned DEFAULT 0 NOT NULL,

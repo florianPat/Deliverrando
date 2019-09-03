@@ -22,7 +22,7 @@
                     <td align="top">{product.name}</td>
                     <td align="top"><f:format.crop maxCharacters="100">{product.description}</f:format.crop></td>
                     <td align="top">{product.quantity}</td>
-                    <td align="top">{product.delieveryTime}</td>
+                    <td align="top">{product.deliverytime}</td>
                     <td align="top">
                         <f:for each="{product.categories}" as="category" iteration="it">
                             <f:if condition="it.isLast">
@@ -54,7 +54,7 @@
         </table>
     </div>
     <div class="columns-2">
-        <order-list link-order-end-action='<f:link.action action="endOrder" controller="StoreInventory">Jetzt bestellen</f:link.action>'></order-list>
+        <order-list link-order-end-action='<f:link.action pageUid="14" action="endOrder" controller="StoreInventory">Jetzt bestellen</f:link.action>'></order-list>
     </div>
 </div>
 
@@ -85,7 +85,7 @@
         <myVH:formFieldHelp tag='<f:form.textfield property="name" required="true" />' idPrefix="addAction" />
         <myVH:formFieldHelp tag='<f:form.textarea property="description" required="true" />' idPrefix="addAction" />
         <myVH:formFieldHelp tag='<f:form.textfield property="quantity" type="number" required="true" />' idPrefix="addAction" />
-        <myVH:formFieldHelp tag='<f:form.textfield property="delieveryTime" type="number" required="true" />' idPrefix="addAction" />
+        <myVH:formFieldHelp tag='<f:form.textfield property="deliverytime" type="number" required="true" />' idPrefix="addAction" />
         <!-- categoryOptions ist ein azzoiatives array, wo der key der wert des arguments ist, und das value, was man auswählen kann -->
         <f:form.select name="category" options="{categoryOptions}" /> <p></p><br />
 

@@ -27,7 +27,7 @@ class Product extends AbstractEntity
     * @var int
      * @\TYPO3\CMS\Extbase\Annotation\Validate("MyVendor\SitePackage\Domain\Validator\DelieveryTimeValidator")
     */
-    protected $delieveryTime;
+    protected $deliverytime;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\MyVendor\SitePackage\Domain\Model\Category>
@@ -45,14 +45,14 @@ class Product extends AbstractEntity
     *  @param string $name
     *  @param string $description
     *  @param int $quantity
-    *  @param int $§delieveryTime
+    *  @param int $§deliverytime
     */
-    public function __construct($name = '', $description = '', $quantity = 0, $delieveryTime = 0)
+    public function __construct($name = '', $description = '', $quantity = 0, $deliverytime = 0)
     {
         $this->name = $name;
         $this->description = $description;
         $this->quantity = $quantity;
-        $this->delieveryTime = $delieveryTime;
+        $this->deliverytime = $deliverytime;
         $this->categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
 
@@ -83,9 +83,9 @@ class Product extends AbstractEntity
     /**
       * @return int
       */
-    public function getDelieveryTime()
+    public function getDeliverytime()
     {
-        return $this->delieveryTime;
+        return $this->deliverytime;
     }
 
     /**
@@ -132,12 +132,12 @@ class Product extends AbstractEntity
        }
 
     /**
-     * @param int $delieveryTime
+     * @param int $deliverytime
      * @return void
      */
-    public function setDelieveryTime($delieveryTime)
+    public function setDeliverytime($deliverytime)
     {
-        $this->delieveryTime = $delieveryTime;
+        $this->deliverytime = $deliverytime;
     }
 
     /**

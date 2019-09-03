@@ -32,7 +32,7 @@ return [
         'eval' => 'int',
       ],
     ],
-    'delieveryTime' => [
+    'deliverytime' => [
       'label' => 'Delievery time',
       'config' => [
           'type' => 'input',
@@ -61,6 +61,6 @@ return [
     ],
   ],
   'types' => [
-    '0' => ['showitem' => 'name, description, quantity, delieveryTime, categories'],
+    '0' => ['showitem' => 'name, description, quantity, deliverytime, categories'],
   ],
 ];

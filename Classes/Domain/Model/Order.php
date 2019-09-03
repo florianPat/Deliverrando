@@ -17,12 +17,18 @@ class Order extends AbstractEntity
     protected $products;
 
     /**
+     * @var int
+     */
+    protected $deliverytime;
+
+    /**
      * @param \MyVendor\SitePackage\Domain\Model\Person $person
      */
     public function __construct(\MyVendor\SitePackage\Domain\Model\Person $person = null)
     {
         $this->person = $person;
         $this->products = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->deliverytime = 0;
     }
 
     /**
@@ -60,6 +66,15 @@ class Order extends AbstractEntity
     }
 
     /**
+     * @param int $deliverytime
+     * @return void
+     */
+    public function setDeliverytime($deliverytime)
+    {
+        $this->deliverytime = $deliverytime;
+    }
+
+    /**
      * @return \MyVendor\SitePackage\Domain\Model\Person
      */
     public function getPerson()
@@ -73,5 +88,13 @@ class Order extends AbstractEntity
     public function getProducts()
     {
         return $this->products;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDeliverytime()
+    {
+        return $this->deliverytime;
     }
 }

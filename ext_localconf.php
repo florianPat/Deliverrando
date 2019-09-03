@@ -11,10 +11,10 @@ defined('TYPO3_MODE') || die('Access denied.');
   'MyVendor.SitePackage',
   'Productlist',
   [
-      'StoreInventory' => 'index, add, remove, show, update, login, register, logout, startOrder, endOrder',
+      'StoreInventory' => 'index, add, remove, show, update, login, register, logout, startOrder, endOrder, finishOrder',
   ],
   [
-      'StoreInventory' => 'index, add, remove, show, update, login, register, logout, startOrder, endOrder',
+      'StoreInventory' => 'index, add, remove, show, update, login, register, logout, startOrder, endOrder, finishOrder',
   ]
 );
 
