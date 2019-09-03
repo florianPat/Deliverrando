@@ -5,6 +5,8 @@
 // But typoscript can also function as a "website template". The setup part in the docs are for the "what typo3 uses to render the page"?
 // One can set variables and "dataProcessing", which then is avaliable in the fluid template.
 
+plugin.tx_felogin_pi1.storagePid = 8
+
 page = PAGE
 page {
     // This decodes the "format" of the page (html in this case?)

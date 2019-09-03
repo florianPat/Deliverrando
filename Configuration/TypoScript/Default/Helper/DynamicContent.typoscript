@@ -21,3 +21,5 @@ lib.dynamicContent {
         }
     }
 }
+
+lib.login < tt_content.login

@@ -294,7 +294,7 @@ class StoreInventoryController extends ActionController
         $email->setSubject("Delieverrando order");
         $email->setFrom(['order@delieverrando.com' => 'Delieverrando']);
         $email->setTo(['bla@gmail.com' => $loggedInPerson->getName()]);
-        $email->setBody('You ordered food!\nIt will be delivered in: ' . $order->getDeliverytime() . ' minutes!');
+        $email->setBody("You ordered food!\nIt will be delivered in: " . $order->getDeliverytime() . " minutes!");
         $email->send();
 
         $this->forward('finishOrder', null, null, ['order' => $order]);

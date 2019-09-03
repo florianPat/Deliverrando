@@ -123,23 +123,7 @@
 
 <f:security.ifAuthenticated>
     <f:then>
-        <p>Your are an editor!</p>
-
-        <!-- kopiert vom logout form ;) -->
-
-        <form action="{f:uri.page(pageUid: 5)}" target="_top" method="post">
-            <fieldset>
-                <legend>Logout</legend>
-                <div>
-                    <input type="submit" name="submit" value="Logout" />
-                </div>
-                <div class="felogin-hidden">
-                    <input type="hidden" name="logintype" value="logout" />
-                    <input type="hidden" name="pid" value="8" />
-                    <input type="hidden" name="tx_felogin_pi1[noredirect]" value="0" />
-                </div>
-            </fieldset>
-        </form>
+        <f:cObject typoscriptObjectPath="lib.login" />
 
         <f:link.action action="index" id="redirectLinkThing" style="display: none"></f:link.action>
     </f:then>
