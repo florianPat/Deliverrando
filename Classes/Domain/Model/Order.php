@@ -33,8 +33,9 @@ class Order extends AbstractEntity
 
     /**
      * @param \MyVendor\SitePackage\Domain\Model\Person $person
+     * @return void
      */
-    public function setPerson(\MyVendor\SitePackage\Domain\Model\Person $person)
+    public function setPerson(\MyVendor\SitePackage\Domain\Model\Person $person) : void
     {
         $this->person = $person;
     }
@@ -43,7 +44,7 @@ class Order extends AbstractEntity
      * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $products
      * @return void
      */
-    public function setProducts(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $products)
+    public function setProducts(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $products) : void
     {
         $this->products = $products;
     }
@@ -51,7 +52,7 @@ class Order extends AbstractEntity
     /**
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
      */
-    public function addProduct(\MyVendor\SitePackage\Domain\Model\Product $product)
+    public function addProduct(\MyVendor\SitePackage\Domain\Model\Product $product) : void
     {
         $this->products->attach($product);
     }
@@ -60,7 +61,7 @@ class Order extends AbstractEntity
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
      * @return void
      */
-    public function removeProduct(\MyVendor\SitePackage\Domain\Model\Product $product)
+    public function removeProduct(\MyVendor\SitePackage\Domain\Model\Product $product) : void
     {
         $this->products->detach($product);
     }
@@ -69,7 +70,7 @@ class Order extends AbstractEntity
      * @param int $deliverytime
      * @return void
      */
-    public function setDeliverytime($deliverytime)
+    public function setDeliverytime(int $deliverytime) : void
     {
         $this->deliverytime = $deliverytime;
     }

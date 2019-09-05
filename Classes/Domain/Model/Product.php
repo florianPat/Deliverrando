@@ -108,7 +108,7 @@ class Product extends AbstractEntity
      *  @param string $name
      *  @return void
      */
-     public function setName($name)
+     public function setName(string $name) : void
      {
          $this->name = $name;
      }
@@ -117,7 +117,7 @@ class Product extends AbstractEntity
       *  @param string $description
       *  @return void
       */
-      public function setDescription($description)
+      public function setDescription(string $description) : void
       {
           $this->description = $description;
       }
@@ -126,7 +126,7 @@ class Product extends AbstractEntity
        *  @param int $quantity
        *  @return void
        */
-       function setQuantity($quantity)
+       function setQuantity(int $quantity) : void
        {
            $this->quantity = $quantity;
        }
@@ -135,7 +135,7 @@ class Product extends AbstractEntity
      * @param int $deliverytime
      * @return void
      */
-    public function setDeliverytime($deliverytime)
+    public function setDeliverytime(int $deliverytime) : void
     {
         $this->deliverytime = $deliverytime;
     }
@@ -144,7 +144,7 @@ class Product extends AbstractEntity
      * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\MyVendor\SitePackage\Domain\Model\Category>
      * @return void
      */
-    public function setCategories(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories)
+    public function setCategories(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories) : void
     {
         $this->categories = $categories;
     }
@@ -153,7 +153,7 @@ class Product extends AbstractEntity
      * @param \MyVendor\SitePackage\Domain\Model\Category $category
      * @return void
      */
-    public function addCategory(\MyVendor\SitePackage\Domain\Model\Category $category)
+    public function addCategory(\MyVendor\SitePackage\Domain\Model\Category $category) : void
     {
         $this->categories->attach($category);
     }
@@ -162,7 +162,7 @@ class Product extends AbstractEntity
      * @param \MyVendor\SitePackage\Domain\Model\Category $category
      * @return void
      */
-    public function removeCategory(\MyVendor\SitePackage\Domain\Model\Category $category)
+    public function removeCategory(\MyVendor\SitePackage\Domain\Model\Category $category) : void
     {
         $this->categories->detach($category);
     }
@@ -171,7 +171,7 @@ class Product extends AbstractEntity
      * @param \MyVendor\SitePackage\Domain\Model\Delieverrando $delieverrando
      * @return void
      */
-    public function setDelieverrando(\MyVendor\SitePackage\Domain\Model\Delieverrando $delieverrando)
+    public function setDelieverrando(\MyVendor\SitePackage\Domain\Model\Delieverrando $delieverrando) : void
     {
         $this->delieverrando = $delieverrando;
     }

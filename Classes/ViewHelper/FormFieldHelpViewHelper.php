@@ -10,13 +10,16 @@ class FormFieldHelpViewHelper extends AbstractTagBasedViewHelper
     /**
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments() : void
     {
         $this->registerArgument("tag", "string", "The tag to add to the form", true);
         $this->registerArgument("idPrefix", "string", "The string to add to the id of the tag and the p tag", true);
     }
 
-    public function render()
+    /**
+     * @return string
+     */
+    public function render() : string
     {
         $result = $this->arguments['tag'];
         $endTag = '/>';

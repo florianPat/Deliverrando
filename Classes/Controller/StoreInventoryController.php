@@ -54,7 +54,7 @@ class StoreInventoryController extends ActionController
     /**
      * @return \MyVendor\SitePackage\Domain\Model\Delieverrando
      */
-    private function getDelieverRandoFromLoggedInUser()
+    private function getDelieverRandoFromLoggedInUser() : \MyVendor\SitePackage\Domain\Model\Delieverrando
     {
         $userGroupUid = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'id');
         assert($userGroupUid !== null);
@@ -67,7 +67,7 @@ class StoreInventoryController extends ActionController
     /**
      * @return void
      */
-    private function addCategoryFromOption()
+    private function addCategoryFromOption() : void
     {
         $allCategories = $this->categoryRepository->findAll();
         $categoryOptions = [0 => ''];
@@ -85,7 +85,7 @@ class StoreInventoryController extends ActionController
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
      * @return void
     */
-    public function indexAction($messageText = '', \MyVendor\SitePackage\Domain\Model\Product $product = null)
+    public function indexAction(string $messageText = '', \MyVendor\SitePackage\Domain\Model\Product $product = null) : void
     {
         if($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid') !== null) {
             $this->view->assign('personLoggedIn', 'true');
@@ -132,7 +132,7 @@ class StoreInventoryController extends ActionController
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
      * @return void
      */
-    public function showAction(\MyVendor\SitePackage\Domain\Model\Product $product)
+    public function showAction(\MyVendor\SitePackage\Domain\Model\Product $product) : void
     {
         $this->view->assign('product', $product);
     }
@@ -141,7 +141,7 @@ class StoreInventoryController extends ActionController
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
      * @return void
      */
-    public function removeAction(\MyVendor\SitePackage\Domain\Model\Product $product)
+    public function removeAction(\MyVendor\SitePackage\Domain\Model\Product $product) : void
     {
         $delieverrando = $this->getDelieverRandoFromLoggedInUser();
         $delieverrando->removeProduct($product);
@@ -155,7 +155,7 @@ class StoreInventoryController extends ActionController
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
      * @return void
      */
-    public function updateAction(\MyVendor\SitePackage\Domain\Model\Product $product)
+    public function updateAction(\MyVendor\SitePackage\Domain\Model\Product $product) : void
     {
         $this->productRepository->update($product);
         $this->forward('index', null, null, ['messageText' => 'Updated', 'product' => $product]);
@@ -171,7 +171,7 @@ class StoreInventoryController extends ActionController
      * NOTE: Before the action runs, the arguments are validated. The annotations from the properties, the Validator with
      * the name \MyVendor\SitePackage\Domain\Validator\ClassnameValidator, and the annotations in the action
      */
-    public function addAction(\MyVendor\SitePackage\Domain\Model\Product $product, $category)
+    public function addAction(\MyVendor\SitePackage\Domain\Model\Product $product, int $category) : void
     {
         $categoryObj = $this->categoryRepository->findByUid($category);
         if($categoryObj !== null) {
@@ -191,7 +191,7 @@ class StoreInventoryController extends ActionController
      * @\TYPO3\CMS\Extbase\Annotation\Validate("\MyVendor\SitePackage\Domain\Validator\PersonNamePasswordValidator", param="person")
      * @return void
      */
-    public function loginAction(\MyVendor\SitePackage\Domain\Model\Person $person)
+    public function loginAction(\MyVendor\SitePackage\Domain\Model\Person $person) : void
     {
         $loginPerson = $this->personRepository->findByName($person->getName());
 
@@ -203,7 +203,7 @@ class StoreInventoryController extends ActionController
     /**
      * @return void
      */
-    public function logoutAction()
+    public function logoutAction() : void
     {
         $GLOBALS['TSFE']->fe_user->setKey('ses', 'uid', null);
 
@@ -215,7 +215,7 @@ class StoreInventoryController extends ActionController
      * @\TYPO3\CMS\Extbase\Annotation\Validate("\MyVendor\SitePackage\Domain\Validator\PersonValidNameValidator", param="person")
      * @return void
      */
-    public function registerAction(\MyVendor\SitePackage\Domain\Model\Person $person)
+    public function registerAction(\MyVendor\SitePackage\Domain\Model\Person $person) : void
     {
         $passwordHash = GeneralUtility::makeInstance(PasswordHashFactory::class)->getDefaultHashInstance('FE');
 
@@ -231,10 +231,9 @@ class StoreInventoryController extends ActionController
     }
 
     /**
-     *
      * @return void
      */
-    public function initializeAction()
+    public function initializeAction() : void
     {
         $actionName = $this->resolveActionMethodName();
         if($actionName !== 'indexAction') {
@@ -242,41 +241,22 @@ class StoreInventoryController extends ActionController
         }
     }
 
-    /**
-     * @param \MyVendor\SitePackage\Domain\Model\Product $product
-     * @return void
-     */
-    public function startOrderAction(\MyVendor\SitePackage\Domain\Model\Product $product)
+    public function initializeEndOrderAction()
     {
-        assert($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid') !== null);
-
-        $orders = $GLOBALS['TSFE']->fe_user->getKey('ses', 'orderProducts');
-
-        if($orders !== null) {
-            $orders[$product->getUid()] += 1;
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'orderProducts', $orders);
-        } else {
-            $orders = [$product->getUid() => 1];
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'orderProducts', $orders);
-        }
-
-        $this->redirect('index');
+        $this->defaultViewObjectName = \TYPO3\CMS\Extbase\Mvc\View\JsonView::class;
     }
 
     /**
-     * @return void
+     * @param \MyVendor\SitePackage\Domain\Model\Person $loggedInPerson
+     * @return \MyVendor\SitePackage\Domain\Model\Order
      */
-    public function endOrderAction()
+    private function setupOrderFromPostArguments(\MyVendor\SitePackage\Domain\Model\Person $loggedInPerson) : \MyVendor\SitePackage\Domain\Model\Order
     {
-        assert($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid') !== null);
-
-        $loggedInPerson = $this->personRepository->findByUid($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid'));
-        assert($loggedInPerson !== null);
         $order = new \MyVendor\SitePackage\Domain\Model\Order($loggedInPerson);
 
         $deliverytime = 0;
 
-        for($i = 0; isset($_POST['products' . $i]); ++$i) {
+        for($i = 0; GeneralUtility::_POST('products' . $i) !== null; ++$i) {
             $product = $this->productRepository->findOneByName(GeneralUtility::_POST('products' . $i));
             assert($product !== null);
 
@@ -290,22 +270,42 @@ class StoreInventoryController extends ActionController
 
         $this->orderRepository->add($order);
 
-        $email = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
-        $email->setSubject("Delieverrando order");
-        $email->setFrom(['order@delieverrando.com' => 'Delieverrando']);
-        $email->setTo(['bla@gmail.com' => $loggedInPerson->getName()]);
-        $email->setBody("You ordered food!\nIt will be delivered in: " . $order->getDeliverytime() . " minutes!");
-        $email->send();
-
-        $this->forward('finishOrder', null, null, ['order' => $order]);
+        return $order;
     }
 
     /**
+     * @param \MyVendor\SitePackage\Domain\Model\Person $loggedInPerson
      * @param \MyVendor\SitePackage\Domain\Model\Order $order
      * @return void
      */
-    public function finishOrderAction(\MyVendor\SitePackage\Domain\Model\Order $order)
+    private function sendEmail(\MyVendor\SitePackage\Domain\Model\Person $loggedInPerson, \MyVendor\SitePackage\Domain\Model\Order $order) : void
     {
-        $this->view->assign('deliverytime', $order->getDeliverytime());
+        $email = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+        $email->setSubject("Delieverrando order");
+        $email->setFrom(['order@delieverrando.com' => 'Delieverrando']);
+        $email->setTo(['florian.patruck@hdnet.de' => $loggedInPerson->getName()]);
+        $email->setBody("You ordered food!\nIt will be delivered in: " . $order->getDeliverytime() . " minutes!");
+        $email->send();
+    }
+
+    /**
+     * @return void
+     */
+    public function endOrderAction() : void
+    {
+        assert($GLOBALS['TSFE']->type === 100);
+        assert($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid') !== null);
+
+        $loggedInPerson = $this->personRepository->findByUid($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid'));
+        assert($loggedInPerson !== null);
+
+        $order = $this->setupOrderFromPostArguments($loggedInPerson);
+
+        $this->sendEmail($loggedInPerson, $order);
+
+        $this->view->setVariablesToRender(['deliverytimeRoot']);
+        $this->view->assignMultiple(['deliverytimeRoot' => [
+            'deliverytime' => $order->getDeliverytime()
+        ]]);
     }
 }

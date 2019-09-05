@@ -41,7 +41,7 @@ class Delieverrando extends AbstractEntity
      * @param string $name
      * @return void
      */
-    public function setName($name)
+    public function setName(string $name) : void
     {
         $this->name = $name;
     }
@@ -58,7 +58,7 @@ class Delieverrando extends AbstractEntity
       * @param \MyVendor\SitePackage\Domain\Model\Product $product
       * @return void
       */
-    public function addProduct(\MyVendor\SitePackage\Domain\Model\Product $product)
+    public function addProduct(\MyVendor\SitePackage\Domain\Model\Product $product) : void
     {
         $this->products->attach($product);
     }
@@ -67,7 +67,7 @@ class Delieverrando extends AbstractEntity
       * @param \MyVendor\SitePackage\Domain\Model\Product $product
       * @return void
       */
-    public function removeProduct(\MyVendor\SitePackage\Domain\Model\Product $product)
+    public function removeProduct(\MyVendor\SitePackage\Domain\Model\Product $product) : void
     {
         $this->products->detach($product);
     }
@@ -76,7 +76,7 @@ class Delieverrando extends AbstractEntity
       * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\MyVendor\SitePackage\Domain\Model\Products>
       * @return void
       */
-    public function setProducts(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $products)
+    public function setProducts(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $products) : void
     {
         $this->products = $products;
     }
@@ -84,7 +84,7 @@ class Delieverrando extends AbstractEntity
     /**
       * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\MyVendor\SitePackage\Domain\Model\Product>
       */
-    public function getProducts()
+    public function getProducts() : \TYPO3\CMS\Extbase\Persistence\ObjectStorage
     {
         return $this->products;
     }
@@ -92,7 +92,7 @@ class Delieverrando extends AbstractEntity
     /**
      * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup
      */
-    public function getUserGroup()
+    public function getUserGroup() : \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup
     {
         return $this->userGroup;
     }

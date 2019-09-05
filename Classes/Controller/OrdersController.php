@@ -12,17 +12,26 @@ class OrdersController extends ActionController
      */
     private $orderRepository;
 
-    private function getToDisplayOrders()
+    /**
+     * @return object
+     */
+    private function getToDisplayOrders() : object
     {
         return $this->orderRepository->findAll();
     }
 
-    public function indexAction()
+    /**
+     * @return void
+     */
+    public function indexAction() : void
     {
         $this->view->assign('orders', $this->getToDisplayOrders());
     }
 
-    public function ajaxAction()
+    /**
+     * @return void
+     */
+    public function ajaxAction() : void
     {
         $this->view->assign('orders', $this->getToDisplayOrders());
     }
@@ -31,7 +40,7 @@ class OrdersController extends ActionController
      * @param \MyVendor\SitePackage\Domain\Model\Order $order
      * @return void
      */
-    public function finishAction(\MyVendor\SitePackage\Domain\Model\Order $order)
+    public function finishAction(\MyVendor\SitePackage\Domain\Model\Order $order) : void
     {
         $this->orderRepository->remove($order);
 

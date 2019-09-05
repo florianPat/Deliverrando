@@ -12,7 +12,7 @@ class PersonRepository extends Repository
      * @param string $name
      * @return \MyVendor\SitePackage\Domain\Model\Person
      */
-    public function findByName($name)
+    public function findByName(string $name) : \MyVendor\SitePackage\Domain\Model\Person
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_sitepackage_domain_model_person');
 

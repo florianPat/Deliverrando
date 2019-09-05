@@ -7,7 +7,7 @@
         {
             this.name = name;
             this.quantity = 1;
-        }
+        };
 
         const ajaxRequestOrder = function(href, orders)
         {
@@ -16,11 +16,12 @@
             xhttp.onreadystatechange = function()
             {
                 if(this.readyState == 4 && this.status == 200) {
-                    document.body.innerHTML = this.responseText;
+                    let jsonResponse = JSON.parse(this.responseText);
+                    vue.$emit('finishedOrder', jsonResponse.deliverytime);
                 } else if(this.readyState == 4 && this.status >= 400) {
                     console.assert(true, 'server error!');
                 }
-            }
+            };
 
             xhttp.open('POST', href, true);
             let sendParams = new URLSearchParams();
@@ -33,7 +34,7 @@
             }
 
             xhttp.send(sendParams);
-        }
+        };
 
         const OrderList = {
             data: function()
@@ -97,24 +98,75 @@
                 linkOrderEndAction: String,
             },
             template: `
-        <ul v-if="orders.length !== 0" class="list-group">
-            <li v-for="order in orders" class="list-group-item">
-                {{ order.name }}
-                <button class="btn" @click="changeQuantity(order, -1);">-</button>
-                {{ order.quantity }}
-                <button class="btn" @click="changeQuantity(order, 1);">+</button>
-            </li>
-            <li class="list-group-item">
-                <button class="btn" @click="makeOrder();">Jetzt bestellen</button>
-            </li>
-        </ul>
-    `
+                <ul v-if="orders.length !== 0" class="list-group">
+                    <li v-for="order in orders" class="list-group-item">
+                        {{ order.name }}
+                        <button class="btn" @click="changeQuantity(order, -1);">-</button>
+                        {{ order.quantity }}
+                        <button class="btn" @click="changeQuantity(order, 1);">+</button>
+                    </li>
+                    <li class="list-group-item">
+                        <button class="btn" @click="makeOrder();">Jetzt bestellen</button>
+                    </li>
+                </ul>
+            `
         };
 
-        new Vue({
+        const FoodCounter = {
+            data: function()
+            {
+                return {
+                    counter: 0,
+                };
+            },
+            methods: {
+                computeLeadingZero(value)
+                {
+                    if((value / 10) < 1.0) {
+                        value = '0' + value;
+                    }
+                    return value;
+                },
+            },
+            computed: {
+                counterDisplay: function()
+                {
+                    let hour = Math.floor(this.counter / 3600);
+                    let minutes = this.computeLeadingZero(Math.floor(this.counter / 60));
+                    let seconds = this.computeLeadingZero(this.counter % 60);
+                    return ((hour !== 0) ? hour + ' : ' : '') + ((minutes !== 0) ? minutes + ' : ' : '') + seconds;
+                },
+            },
+            props: {
+                deliveryTime: Number,
+            },
+            mounted() {
+                this.counter = this.deliveryTime * 60;
+
+                setInterval(() => {
+                    --this.counter;
+                }, 1000);
+            },
+            template: `
+                <span>{{ counterDisplay }}</span>
+            `
+        };
+
+        let vue = new Vue({
             el: '#vueOrderProducts',
             components: {
                 'order-list': OrderList,
+                'food-counter': FoodCounter,
+            },
+            data: {
+                finishedOrder: false,
+                deliverytime: 0,
+            },
+            mounted() {
+                this.$on('finishedOrder', (deliverytime) => {
+                    this.finishedOrder = true;
+                    this.deliverytime = deliverytime;
+                });
             },
         });
     }

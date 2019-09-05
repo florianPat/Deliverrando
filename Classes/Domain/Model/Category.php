@@ -31,7 +31,7 @@ class Category extends AbstractEntity
      * @param string $name
      * @return void
      */
-    public function setName($name)
+    public function setName(string $name) : void
     {
         $this->name = $name;
     }

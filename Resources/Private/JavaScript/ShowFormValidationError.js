@@ -11,8 +11,6 @@
             let propertyName = validateError.childNodes.item(0).nodeValue;
             let propertyErrMessage = validateError.childNodes.item(1).childNodes.item(0).nodeValue;
 
-            console.log('formErr_' + actionName + '_' + propertyName);
-
             let formField = document.getElementById('formErr_' + actionName + '_' + propertyName);
             if (formField === null) {
                 let realPropertyNameEndPos = propertyErrMessage.indexOf(':');

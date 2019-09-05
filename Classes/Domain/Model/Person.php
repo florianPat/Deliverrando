@@ -45,13 +45,13 @@ class Person extends AbstractEntity
      * @param string $name
      * @return void
      */
-    public function setName($name)
+    public function setName(string $name) : void
     {
         $this->name = $name;
     }
 
 
-    public function setPassword($password)
+    public function setPassword(string $password) : void
     {
         $this->password = $password;
     }
@@ -60,7 +60,7 @@ class Person extends AbstractEntity
      * @param string $address
      * @return void
      */
-    public function setAddress($address)
+    public function setAddress(string $address) : void
     {
         $this->address = $address;
     }
@@ -69,7 +69,7 @@ class Person extends AbstractEntity
      * @param string $telephonenumber
      * @return void
      */
-    public function setTelephonenumber($telephonenumber)
+    public function setTelephonenumber(string $telephonenumber) : void
     {
         $this->telephonenumber = $telephonenumber;
     }

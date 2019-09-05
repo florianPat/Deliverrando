@@ -13,13 +13,13 @@ class ProductRepository extends Repository
 {
     /**
      * @param array $uids
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findAllWithDieverRandoUids(array $uids)
+    public function findAllWithDieverRandoUids(array $uids) : array
     {
         $query = $this->createQuery();
         $query->matching($query->in('delieverrando', $uids));
-        return $query->execute();
+        return $query->execute()->toArray();
     }
 }

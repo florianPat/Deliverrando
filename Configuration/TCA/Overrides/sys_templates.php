@@ -16,4 +16,10 @@ defined('TYPO3_MODE') || die();
         'Configuration/TypoScript/WithoutSchnickSchnack',
         'WithoutSchnickSchnack'
     );
+
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+        'site_package',
+        'Configuration/TypoScript/Json',
+        'Json'
+    );
 })();

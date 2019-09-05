@@ -14,14 +14,19 @@ class AjaxHTML extends AbstractView
     /**
      * @return string
      */
-    public function render()
+    public function render() : string
     {
         assert(isset($this->variables['orders']));
         $orders = $this->variables['orders'];
 
-        $result = '<div class="card-deck">';
+        $result = '';
 
-        foreach($orders as $order) {
+        foreach($orders as $i => $order) {
+            if($i == 0) {
+                $result .= '<div class="card-deck">';
+            } else if(($i % 2) === 0) {
+                $result .= '</div><div class="card-deck">';
+            }
             $uri = GeneralUtility::makeInstance(ObjectManager::class)->get(UriBuilder::class)->setTargetPageUid(10)->setArguments(['tx_sitepackage_bestellungen[action]' => 'finish', 'tx_sitepackage_bestellungen[controller]' => 'Orders', 'tx_sitepackage_bestellungen[order]' => $order->getUid()])->buildFrontendUri();
 
             $result .= '<div class="card">' .
@@ -45,8 +50,10 @@ class AjaxHTML extends AbstractView
                     '<a href="' . $uri . '" class="card-link">Finished!</a>' .
                 '</div>' .
             '</div>';
+            if($i === $orders->count() - 1 && ($i % 2) === 0) {
+                $result .= '<div class="card"></div>';
+            }
         }
-
         $result .= '</div>';
 
         return $result;

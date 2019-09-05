@@ -12,7 +12,7 @@ class DelieverrandoRepository extends Repository
      * @param int $userGroup
      * @return string
      */
-    public function findDelieverRandoUid($userGroupUid)
+    public function findDelieverRandoUid(int $userGroupUid) : string
     {
         //NOTE: It would be easier if I just use this function. But I can not do it, because the table column has to be named in snake_case
         //return $this->findOneByUserGroup($userGroupUid)->getUid();
@@ -30,7 +30,7 @@ class DelieverrandoRepository extends Repository
      * @param int $userGroupUid
      * @return int
      */
-    private function findSubGroup($userGroupUid)
+    private function findSubGroup(int $userGroupUid) : int
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_groups');
 
@@ -47,7 +47,11 @@ class DelieverrandoRepository extends Repository
         }
     }
 
-    public function findDelieverRandoName($uid)
+    /**
+     * @param int $uid
+     * @return string
+     */
+    public function findDelieverRandoName(int $uid) : string
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_sitepackage_domain_model_delieverrando');
 
@@ -62,7 +66,7 @@ class DelieverrandoRepository extends Repository
      * @param int $userGroupUid
      * @return array
      */
-    public function findDelieverRandoUidsForUserGroup($userGroupUid)
+    public function findDelieverRandoUidsForUserGroup(int $userGroupUid) : array
     {
         $delieverrandoSubGroupIds = [];
         $result = [$this->findDelieverRandoUid($userGroupUid)];

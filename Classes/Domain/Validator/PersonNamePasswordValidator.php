@@ -14,7 +14,11 @@ class PersonNamePasswordValidator extends AbstractValidator
      */
     private $personRepository;
 
-    protected function isValid($value)
+    /**
+     * @param mixed $value
+     * @return void
+     */
+    protected function isValid($value) : void
     {
         $person = $this->personRepository->findByName($value->getName());
 

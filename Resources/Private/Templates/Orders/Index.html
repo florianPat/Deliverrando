@@ -1,8 +1,18 @@
 <f:link.action pageUid="12" action="ajax" controller="Orders" id="ajaxUrl"></f:link.action>
 
 <div id="orderDisplay">
-    <div class="card-deck">
-        <f:for each="{orders}" as="order">
+        <f:for each="{orders}" as="order" iteration="it">
+            <f:if condition="{it.isFirst}">
+                <f:then>
+                    <div class="card-deck">
+                </f:then>
+                <f:else>
+                    <f:if condition="{it.isOdd}">
+                        </div>
+                        <div class="card-deck">
+                    </f:if>
+                </f:else>
+            </f:if>
             <div class="card">
                 <h2 class="card-header">Order id: {order.uid}</h2>
                 <div class="card-body">
@@ -24,6 +34,12 @@
                     <f:link.action action="finish" arguments="{order: order}" class="card-link">Finished!</f:link.action>
                 </div>
             </div>
+            <f:if condition="{it.isLast}">
+                <f:if condition="{it.isOdd}">
+                    <div class="card"></div>
+                </f:if>
+
+                </div>
+            </f:if>
         </f:for>
-    </div>
 </div>
