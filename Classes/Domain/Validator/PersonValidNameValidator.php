@@ -8,7 +8,7 @@ class PersonValidNameValidator extends AbstractValidator
 {
     /**
      * @var \MyVendor\SitePackage\Domain\Repository\PersonRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     private $personRepository;
 

@@ -19,26 +19,26 @@ class StoreInventoryController extends ActionController
 
     /**
      * @var \MyVendor\SitePackage\Domain\Repository\DelieverrandoRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      * NOTE: Has the same effect as declaring the method injectCategoryRepository
      */
     private $delieverrandoRepository;
 
     /**
      * @var \MyVendor\SitePackage\Domain\Repository\CategoryRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     private $categoryRepository;
 
     /**
      * @var \MyVendor\SitePackage\Domain\Repository\PersonRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     private $personRepository;
 
     /**
      * @var \MyVendor\SitePackage\Domain\Repository\OrderRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     private $orderRepository;
 
@@ -109,14 +109,16 @@ class StoreInventoryController extends ActionController
             $this->view->assign("messageText", $messageText);
             $this->view->assign('messageProduct', $product);
 
-            $persistenceManager = $this->objectManager->get(PersistenceManager::class);
-            $persistenceManager->persistAll();
+            $this->objectManager->get(PersistenceManager::class)->persistAll();
         }
 
-        if($GLOBALS['TSFE']->loginUser) {
+        $context = GeneralUtility::makeInstance(Context::class);
+        if($context->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {
             $this->addCategoryFromOption();
 
-            $userGroupUid = $GLOBALS['TSFE']->fe_user->user['usergroup'];
+            $userGroupUids = $context->getPropertyFromAspect('frontend.user', 'groupIds');
+            //TODO: Verify from someone who has knowledge that this is OK ;)
+            $userGroupUid = $userGroupUids[count($userGroupUids) - 1];
 
             $delieverrandoUids = $this->delieverrandoRepository->findDelieverRandoUidsForUserGroup($userGroupUid);
             $products = $this->productRepository->findAllWithDieverRandoUids($delieverrandoUids);
@@ -143,9 +145,7 @@ class StoreInventoryController extends ActionController
      */
     public function removeAction(\MyVendor\SitePackage\Domain\Model\Product $product) : void
     {
-        $delieverrando = $this->getDelieverRandoFromLoggedInUser();
-        $delieverrando->removeProduct($product);
-        $this->delieverrandoRepository->update($delieverrando);
+        $this->productRepository->remove($product);
 
         //NOTE: Druch forward werden die Daten nicht persistet (es wird kein neuer request-response cycle erstellt)
         $this->forward('index', null, null, ['messageText' => 'Removed', 'product' => $product]);

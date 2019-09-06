@@ -20,12 +20,13 @@ class Product extends AbstractEntity
 
     /**
     *  @var int
+    * @\TYPO3\CMS\Extbase\Annotation\Validate("MyVendor\SitePackage\Domain\Validator\DelieveryTimeValidator", options={"maximum": 1000})
     */
     protected $quantity;
 
     /**
     * @var int
-     * @\TYPO3\CMS\Extbase\Annotation\Validate("MyVendor\SitePackage\Domain\Validator\DelieveryTimeValidator")
+    * @\TYPO3\CMS\Extbase\Annotation\Validate("MyVendor\SitePackage\Domain\Validator\DelieveryTimeValidator", options={"maximum": 100})
     */
     protected $deliverytime;
 

@@ -99,15 +99,17 @@
             },
             template: `
                 <ul v-if="orders.length !== 0" class="list-group">
-                    <li v-for="order in orders" class="list-group-item">
-                        {{ order.name }}
-                        <button class="btn" @click="changeQuantity(order, -1);">-</button>
-                        {{ order.quantity }}
-                        <button class="btn" @click="changeQuantity(order, 1);">+</button>
-                    </li>
-                    <li class="list-group-item">
-                        <button class="btn" @click="makeOrder();">Jetzt bestellen</button>
-                    </li>
+                    <transition-group>
+                        <li v-for="order in orders" class="list-group-item" :key="order.name">
+                            {{ order.name }}
+                            <button class="btn" @click="changeQuantity(order, -1);">-</button>
+                            {{ order.quantity }}
+                            <button class="btn" @click="changeQuantity(order, 1);">+</button>
+                        </li>
+                        <li class="list-group-item" key="btn">
+                            <button class="btn" @click="makeOrder();">Jetzt bestellen</button>
+                        </li>
+                    </transition-group>
                 </ul>
             `
         };

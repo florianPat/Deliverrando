@@ -30,6 +30,10 @@ return [
         'type' => 'input',
         'size' => '4',
         'eval' => 'int',
+        'range' => [
+            'lower' => 0,
+            'upper' => 1000,
+        ],
       ],
     ],
     'deliverytime' => [
@@ -40,7 +44,7 @@ return [
           'eval' => 'int',
           'range' => [
               'lower' => 0,
-              'upper' => 1000,
+              'upper' => 100,
           ],
       ],
     ],

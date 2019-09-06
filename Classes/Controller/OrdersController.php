@@ -8,7 +8,7 @@ class OrdersController extends ActionController
 {
     /**
      * @var \MyVendor\SitePackage\Domain\Repository\OrderRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     private $orderRepository;
 
