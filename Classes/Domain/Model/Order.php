@@ -17,6 +17,11 @@ class Order extends AbstractEntity
     protected $products;
 
     /**
+     * @var array
+     */
+    protected $productQuantities;
+
+    /**
      * @var int
      */
     protected $deliverytime;
@@ -28,6 +33,7 @@ class Order extends AbstractEntity
     {
         $this->person = $person;
         $this->products = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->productQuantities = [];
         $this->deliverytime = 0;
     }
 
@@ -41,29 +47,51 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $products
+     * @param \MyVendor\SitePackage\Domain\Model\Product $product
      * @return void
      */
-    public function setProducts(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $products) : void
-    {
-        $this->products = $products;
-    }
-
-    /**
-     * @param \MyVendor\SitePackage\Domain\Model\Product $product
-     */
-    public function addProduct(\MyVendor\SitePackage\Domain\Model\Product $product) : void
+    private function addProduct(\MyVendor\SitePackage\Domain\Model\Product $product) : void
     {
         $this->products->attach($product);
     }
 
     /**
-     * @param \MyVendor\SitePackage\Domain\Model\Product $product
+     * @param int $quantity
      * @return void
      */
-    public function removeProduct(\MyVendor\SitePackage\Domain\Model\Product $product) : void
+    private function addQuantity(int $quantity) : void
     {
-        $this->products->detach($product);
+        array_push($this->productQuantities, $quantity);
+    }
+
+    /**
+     * @param Product $product
+     * @param int $quantity
+     * @return void
+     */
+    public function addProductDescription(\MyVendor\SitePackage\Domain\Model\Product $product, int $quantity) : void
+    {
+        $this->addProduct($product);
+        $this->addQuantity($quantity);
+    }
+
+    /**
+     * @return array
+     */
+    public function getProductDescriptions() : array
+    {
+        $result = [];
+
+        $length = count($this->productQuantities);
+        for($i = 0, $this->products->rewind(); $i < $length; ++$i, $this->products->next()) {
+            $product = $this->products->current();
+            assert($product);
+            $quantity = $this->productQuantities[$i];
+
+            array_push($result, new Helper\ProductDescription($product, $quantity));
+        }
+
+        return $result;
     }
 
     /**
@@ -81,14 +109,6 @@ class Order extends AbstractEntity
     public function getPerson()
     {
         return $this->person;
-    }
-
-    /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
-     */
-    public function getProducts()
-    {
-        return $this->products;
     }
 
     /**

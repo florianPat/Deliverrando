@@ -2,6 +2,8 @@
 
 namespace MyVendor\SitePackage\Controller;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -10,8 +12,10 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
-class StoreInventoryController extends ActionController
+class StoreInventoryController extends ActionController implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
     *  @var \MyVendor\SitePackage\Domain\Repository\ProductRepository
     */
@@ -81,27 +85,38 @@ class StoreInventoryController extends ActionController
     }
 
     /**
+     * @param string $isoDatetime
+     * @return bool
+     */
+    private function isOpened(string $isoDatetime) : bool
+    {
+        $startTimePos = strpos($isoDatetime, 'T') + 1;
+        $endTimePos = strpos($isoDatetime, '+');
+        $isoTime = substr($isoDatetime, $startTimePos, $endTimePos - $startTimePos);
+        $hourEndPos = strpos($isoTime, ':');
+        $hour = intval(substr($isoTime, 0, $hourEndPos));
+        return ($hour > 8 && $hour < 10);
+    }
+
+    /**
      * @param string $messageText
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
      * @return void
     */
     public function indexAction(string $messageText = '', \MyVendor\SitePackage\Domain\Model\Product $product = null) : void
     {
+        $context = GeneralUtility::makeInstance(Context::class);
+
         if($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid') !== null) {
             $this->view->assign('personLoggedIn', 'true');
+            if($this->isOpened($context->getPropertyFromAspect('date', 'iso'))) {
+                $this->view->assign('opened', true);
+            }
+        } else {
+            $this->view->assign('opened', true);
         }
         if($GLOBALS['TSFE']->fe_user->getKey('ses', 'lastAction') !== null) {
             $this->view->assign('lastAction', $GLOBALS['TSFE']->fe_user->getKey('ses', 'lastAction'));
-        }
-        if($GLOBALS['TSFE']->fe_user->getKey('ses', 'orderProducts') !== null) {
-            $sesOrderProducts = $GLOBALS['TSFE']->fe_user->getKey('ses', 'orderProducts');
-            $renderOrderProducts = [];
-            foreach($sesOrderProducts as $key => $it) {
-                $product = $this->productRepository->findByUid($key);
-                assert($product !== null);
-                array_push($renderOrderProducts, $product->getName());
-            }
-            $this->view->assign('orderProducts', $renderOrderProducts);
         }
 
         if($messageText !== '') {
@@ -112,7 +127,6 @@ class StoreInventoryController extends ActionController
             $this->objectManager->get(PersistenceManager::class)->persistAll();
         }
 
-        $context = GeneralUtility::makeInstance(Context::class);
         if($context->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {
             $this->addCategoryFromOption();
 
@@ -258,13 +272,14 @@ class StoreInventoryController extends ActionController
 
         for($i = 0; GeneralUtility::_POST('products' . $i) !== null; ++$i) {
             $product = $this->productRepository->findOneByName(GeneralUtility::_POST('products' . $i));
+            $productQuantity = GeneralUtility::_POST('quantity' . $i);
             assert($product !== null);
 
             if($product->getDeliverytime() > $deliverytime) {
                 $deliverytime = $product->getDeliverytime();
             }
 
-            $order->addProduct($product);
+            $order->addProductDescription($product, $productQuantity);
         }
         $order->setDeliverytime($deliverytime);
 
@@ -300,12 +315,21 @@ class StoreInventoryController extends ActionController
         assert($loggedInPerson !== null);
 
         $order = $this->setupOrderFromPostArguments($loggedInPerson);
+        $productDescs = $order->getProductDescriptions();
+        foreach($productDescs as $productDesc) {
+            $product = $productDesc->getProduct();
+            $product->setQuantity($product->getQuantity() - $productDesc->getQuantity());
+            if($product->getQuantity() < 0) {
+                $this->logger->error('There is/are not enough ' . $product->getName() . '(s) available');
+            }
+            $this->productRepository->update($productDesc->getProduct());
+        }
 
         $this->sendEmail($loggedInPerson, $order);
 
         $this->view->setVariablesToRender(['deliverytimeRoot']);
         $this->view->assignMultiple(['deliverytimeRoot' => [
-            'deliverytime' => $order->getDeliverytime()
+            'deliverytime' => $order->getDeliverytime(),
         ]]);
     }
 }

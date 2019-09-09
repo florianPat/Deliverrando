@@ -7,10 +7,10 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 class DelieveryTimeValidator extends AbstractValidator
 {
     //NOTE: For the "options" property in the annotation
-    protected $supportedOptions = array(
+    protected $supportedOptions = [
         //Name       defaultValue, description, type, required
         'maximum' => [0, 'maximum value', 'integer', true],
-    );
+    ];
 
     /**
      * @param mixed $value

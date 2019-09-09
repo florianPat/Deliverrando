@@ -1,5 +1,4 @@
-//TODO: Can I get rid of this global?
-var lastVisibleNavItem = '';
+let lastVisibleNavItem = '';
 
 function showNavItem(id)
 {

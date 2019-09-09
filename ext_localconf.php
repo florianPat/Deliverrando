@@ -29,20 +29,20 @@ defined('TYPO3_MODE') || die('Access denied.');
     ]
 );
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_sitepackage_ProductQuantityChecker'] = array(
-    'extension' => 'sitepackage',
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\MyVendor\SitePackage\Task\ProductQuantityCheckerTask::class] = [
+    'extension' => $_EXTKEY,
     'title' => 'ProductQuantityChecker',
     'description' => 'Check if you need more!!',
     'additionalFields' => '',
-);
+];
 
-$GLOBALS['TYPO3_CONF_VARS']['LOG']['Tx']['sitepackage']['writerConfiguration'] = array(
-    \TYPO3\CMS\Core\Log\LogLevel::DEBUG => array(
+$GLOBALS['TYPO3_CONF_VARS']['LOG']['Tx']['sitepackage']['writerConfiguration'] = [
+    \TYPO3\CMS\Core\Log\LogLevel::DEBUG => [
         //NOTE: For a file
-        'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => array(
+        'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
             'logFile' => 'typo3temp/logs/typo3_nice.log',
-        ),
+        ],
         //NOTE: For syslog (backend-module)
-        //'TYPO3\\CMS\\Core\\Log\\Writer\\SyslogWriter' => array(),
-    ),
-);
+        //'TYPO3\\CMS\\Core\\Log\\Writer\\SyslogWriter' => [],
+    ],
+];
