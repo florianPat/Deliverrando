@@ -75,6 +75,7 @@ CREATE TABLE tx_sitepackage_domain_model_person(
     address varchar(255) DEFAULT '' NOT NULL,
     telephonenumber varchar(16) DEFAULT '' NOT NULL,
     password varchar(255) DEFAULT '' NOT NULL,
+    email varchar(255) DEFAULT '' NOT NULL,
 
     crdate int(11) DEFAULT 0 NOT NULL,
     tstamp int(11) unsigned DEFAULT 0 NOT NULL,

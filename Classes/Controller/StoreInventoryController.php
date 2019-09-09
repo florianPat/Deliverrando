@@ -109,9 +109,9 @@ class StoreInventoryController extends ActionController implements LoggerAwareIn
 
         if($GLOBALS['TSFE']->fe_user->getKey('ses', 'uid') !== null) {
             $this->view->assign('personLoggedIn', 'true');
-            if($this->isOpened($context->getPropertyFromAspect('date', 'iso'))) {
+            //if($this->isOpened($context->getPropertyFromAspect('date', 'iso'))) {
                 $this->view->assign('opened', true);
-            }
+            //}
         } else {
             $this->view->assign('opened', true);
         }
@@ -290,16 +290,19 @@ class StoreInventoryController extends ActionController implements LoggerAwareIn
 
     /**
      * @param \MyVendor\SitePackage\Domain\Model\Person $loggedInPerson
-     * @param \MyVendor\SitePackage\Domain\Model\Order $order
+     * @param int $deliveryTime
+     * @param string $productNameList
      * @return void
      */
-    private function sendEmail(\MyVendor\SitePackage\Domain\Model\Person $loggedInPerson, \MyVendor\SitePackage\Domain\Model\Order $order) : void
+    private function sendEmail(\MyVendor\SitePackage\Domain\Model\Person $loggedInPerson, int $deliveryTime,
+        string $productNameList) : void
     {
         $email = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+        $email->setContentType('text/html');
         $email->setSubject("Delieverrando order");
         $email->setFrom(['order@delieverrando.com' => 'Delieverrando']);
-        $email->setTo(['florian.patruck@hdnet.de' => $loggedInPerson->getName()]);
-        $email->setBody("You ordered food!\nIt will be delivered in: " . $order->getDeliverytime() . " minutes!");
+        $email->setTo([$loggedInPerson->getEmail() => $loggedInPerson->getName()]);
+        $email->setBody("<h4>You ordered food!</h4><p>It will be delivered in: " . $deliveryTime . " minutes!</p><p>You ordered:</p>" . $productNameList);
         $email->send();
     }
 
@@ -316,16 +319,19 @@ class StoreInventoryController extends ActionController implements LoggerAwareIn
 
         $order = $this->setupOrderFromPostArguments($loggedInPerson);
         $productDescs = $order->getProductDescriptions();
+        $productNameList = '<ul>';
         foreach($productDescs as $productDesc) {
             $product = $productDesc->getProduct();
+            $productNameList .= '<li>x' . $productDesc->getQuantity() . ' ' . $product->getName() . '</li>';
             $product->setQuantity($product->getQuantity() - $productDesc->getQuantity());
             if($product->getQuantity() < 0) {
                 $this->logger->error('There is/are not enough ' . $product->getName() . '(s) available');
             }
             $this->productRepository->update($productDesc->getProduct());
         }
+        $productNameList .= '</ul>';
 
-        $this->sendEmail($loggedInPerson, $order);
+        $this->sendEmail($loggedInPerson, $order->getDeliverytime(), $productNameList);
 
         $this->view->setVariablesToRender(['deliverytimeRoot']);
         $this->view->assignMultiple(['deliverytimeRoot' => [

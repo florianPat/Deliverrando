@@ -28,17 +28,25 @@ class Person extends AbstractEntity
     protected $telephonenumber = '';
 
     /**
+     * @var string
+     * @\TYPO3\CMS\Extbase\Annotation\Validate("EmailAddressValidator")
+     */
+    protected $email = '';
+
+    /**
      * @param string $name
      * @param string $password
      * @param string $address
      * @param string $telephonenumber
+     * @param string $email
      */
-    public function __construct($name, $password, $address = '', $telephonenumber = '')
+    public function __construct($name, $password, $address = '', $telephonenumber = '', $email = '')
     {
         $this->name = $name;
         $this->password = $password;
         $this->address = $address;
         $this->telephonenumber = $telephonenumber;
+        $this->email = $email;
     }
 
     /**
@@ -75,6 +83,15 @@ class Person extends AbstractEntity
     }
 
     /**
+     * @param string $email
+     * @return void
+     */
+    public function setEmail(string $email) : void
+    {
+        $this->email = $email;
+    }
+
+    /**
      * @return string
      */
     public function getName()
@@ -104,5 +121,13 @@ class Person extends AbstractEntity
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 }

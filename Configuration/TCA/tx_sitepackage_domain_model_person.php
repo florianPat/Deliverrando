@@ -43,8 +43,16 @@ return [
                 'max' => 30,
             ],
         ],
+        'email' => [
+            'label' => 'Email',
+            'config' => [
+                'type' => 'input',
+                'size' => 20,
+                'eval' => 'required,email',
+            ],
+        ],
     ],
     'types' => [
-        '0' => ['showitem' => 'name, password, address, telephonenumber'],
+        '0' => ['showitem' => 'name, password, address, telephonenumber, email'],
     ],
 ];
