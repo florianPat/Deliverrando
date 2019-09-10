@@ -39,8 +39,14 @@ return [
                 ],
             ],
         ],
+        'productquantities' => [
+            'label' => 'Product Quantites',
+            'config' => [
+                'type' => 'input',
+            ],
+        ],
     ],
     'types' => [
-        '0' => ['showitem' => 'person, products, deliverytime'],
+        '0' => ['showitem' => 'person, products, deliverytime, productquantities'],
     ],
 ];

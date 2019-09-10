@@ -17,9 +17,9 @@ class Order extends AbstractEntity
     protected $products;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $productQuantities;
+    protected $productquantities;
 
     /**
      * @var int
@@ -33,7 +33,7 @@ class Order extends AbstractEntity
     {
         $this->person = $person;
         $this->products = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->productQuantities = [];
+        $this->productquantities = '';
         $this->deliverytime = 0;
     }
 
@@ -61,7 +61,11 @@ class Order extends AbstractEntity
      */
     private function addQuantity(int $quantity) : void
     {
-        array_push($this->productQuantities, $quantity);
+        if($this->productquantities === '') {
+            $this->productquantities .= $quantity;
+        } else {
+            $this->productquantities .= ',' . $quantity;
+        }
     }
 
     /**
@@ -82,11 +86,13 @@ class Order extends AbstractEntity
     {
         $result = [];
 
-        $length = count($this->productQuantities);
-        for($i = 0, $this->products->rewind(); $i < $length; ++$i, $this->products->next()) {
-            $product = $this->products->current();
+        $productQuantities = explode(',', $this->productquantities);
+        $productArray = $this->products->toArray();
+        $length = count($productQuantities);
+        for($i = 0; $i < $length; ++$i) {
+            $product = $productArray[$i];
             assert($product);
-            $quantity = $this->productQuantities[$i];
+            $quantity = intval($productQuantities[$i]);
 
             array_push($result, new Helper\ProductDescription($product, $quantity));
         }
@@ -109,6 +115,14 @@ class Order extends AbstractEntity
     public function getPerson()
     {
         return $this->person;
+    }
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     */
+    public function getProducts()
+    {
+        return $this->products;
     }
 
     /**

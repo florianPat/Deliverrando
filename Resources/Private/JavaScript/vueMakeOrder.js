@@ -154,11 +154,39 @@
             `
         };
 
+        const ProductNameCheckboxList = {
+            data() {
+                return {
+                    checkedProducts: [],
+                };
+            },
+            computed: {
+                finishedOrderWatcher: function() {
+                    console.log(this.checkedProducts);
+                    if(this.checkedProducts.length === this.orderProducts.length) {
+                        //TODO: Click finish!
+                    }
+                },
+            },
+            props: {
+                orderProducts: Array,
+            },
+            template: `
+                <ul class="list-group">
+                    <li class="list-group-item" v-for="product in orderProducts">
+                        {{ product.name }}
+                        <input type="checkbox" style="float: right" :checked="checkedProducts">
+                    </li>
+                </ul>
+            `
+        };
+
         let vue = new Vue({
             el: '#vueOrderProducts',
             components: {
                 'order-list': OrderList,
                 'food-counter': FoodCounter,
+                'product-name-checkbox-list': ProductNameCheckboxList,
             },
             data: {
                 finishedOrder: false,
@@ -169,7 +197,7 @@
                     this.finishedOrder = true;
                     this.deliverytime = deliverytime;
                 });
-            },
+            }
         });
     }
 })();

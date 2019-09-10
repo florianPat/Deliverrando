@@ -41,8 +41,8 @@ class AjaxHTML extends AbstractView
                         'Products' .
                     '</div>' .
                     '<ul class="list-group">';
-                        foreach($order->getProducts() as $product) {
-                            $result .= '<li class="list-group-item">' . $product->getName() . '</li>';
+                        foreach($order->getProductDescriptions() as $productDesc) {
+                            $result .= '<li class="list-group-item">x' . $productDesc->getQuantity() . ' ' . $productDesc->getProduct()->getName() . '</li>';
                         }
                     $result .= '</ul>'.
                 '</div>' .

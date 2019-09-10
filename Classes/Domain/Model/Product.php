@@ -46,7 +46,7 @@ class Product extends AbstractEntity
     *  @param string $name
     *  @param string $description
     *  @param int $quantity
-    *  @param int $§deliverytime
+    *  @param int $deliverytime
     */
     public function __construct($name = '', $description = '', $quantity = 0, $deliverytime = 0)
     {
