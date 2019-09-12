@@ -139,7 +139,7 @@ class StoreInventoryController extends ActionController implements LoggerAwareIn
             $this->addCategoryFromOption();
 
             $userGroupUids = $context->getPropertyFromAspect('frontend.user', 'groupIds');
-            //TODO: Verify from someone who has knowledge that this is OK ;)
+            //NOTE: TODO: This is kind of a hack
             $userGroupUid = $userGroupUids[count($userGroupUids) - 1];
 
             $delieverrandoUids = $this->delieverrandoRepository->findDelieverRandoUidsForUserGroup($userGroupUid);
@@ -328,6 +328,7 @@ class StoreInventoryController extends ActionController implements LoggerAwareIn
         $order = $this->setupOrderFromPostArguments($loggedInPerson);
         $productDescs = $order->getProductDescriptions();
         $productNameList = '<ul>';
+        $quantitySum = 0;
         foreach($productDescs as $productDesc) {
             $product = $productDesc->getProduct();
             $productNameList .= '<li>x' . $productDesc->getQuantity() . ' ' . $product->getName() . '</li>';
@@ -336,6 +337,8 @@ class StoreInventoryController extends ActionController implements LoggerAwareIn
                 $this->logger->error('There is/are not enough ' . $product->getName() . '(s) available');
             }
             $this->productRepository->update($productDesc->getProduct());
+
+            $quantitySum += $productDesc->getQuantity();
         }
         $productNameList .= '</ul>';
 
@@ -347,6 +350,7 @@ class StoreInventoryController extends ActionController implements LoggerAwareIn
         $this->view->assignMultiple(['responseRoot' => [
             'deliverytime' => $order->getDeliverytime(),
             'orderUid' => $order->getUid(),
+            'quantitySum' => $quantitySum,
         ]]);
     }
 

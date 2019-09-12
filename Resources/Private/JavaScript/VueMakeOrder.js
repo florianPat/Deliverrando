@@ -186,7 +186,6 @@
             mounted() {
                 this.$root.$on('progressUpdate', (jsonResponse) => {
                     console.assert(jsonResponse.progress.length > 0);
-                    const progrressLength = jsonResponse.progress.length;
                     if (jsonResponse.progress[0] === 'finished') {
                         clearInterval(this.setIntervalId);
                         this.percent = 100;
@@ -197,8 +196,8 @@
 
                     let percent = 0;
                     for (let progressIt of jsonResponse.progress) {
-                        if (progressIt !== '0' && progressIt !== '') {
-                            percent += (1 / progrressLength) * 100;
+                        if (progressIt !== 0) {
+                            percent += (progressIt / this.progressLength) * 100;
                         }
                     }
                     if (percent >= 100) {
@@ -217,6 +216,7 @@
             },
             props: {
                 jsonResponse: Object,
+                progressLength: Number,
                 linkGetProgressAction: String,
             },
             template: `
@@ -241,7 +241,6 @@
             },
             mounted() {
                 this.$on('finishedOrder', (jsonResponse) => {
-                    console.log('finishedOrder');
                     this.makeOrderJsonResponse = jsonResponse;
                     this.finishedOrder = true;
                 });

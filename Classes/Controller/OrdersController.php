@@ -15,7 +15,6 @@ class OrdersController extends ActionController
      */
     private $orderRepository;
 
-    //TODO: Does this really need to exist?
     /**
      * @return void
      */
@@ -79,7 +78,7 @@ class OrdersController extends ActionController
         assert($GLOBALS['TSFE']->type === 100);
 
         $order = $this->orderRepository->findByUid(GeneralUtility::_POST('orderUid'));
-        $order->toggleProgress(GeneralUtility::_POST('productIndex'));
+        $order->alterProgress(GeneralUtility::_POST('productIndex'), GeneralUtility::_POST('checked'));
         $this->orderRepository->update($order);
     }
 

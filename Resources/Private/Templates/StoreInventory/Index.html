@@ -5,7 +5,8 @@
         <h1>Vielen Dank für ihre Bestellung!</h1>
         <p>Sie müssen nur noch <food-counter :json-response="makeOrderJsonResponse"></food-counter> Minuten auf ihr Essen warten!</p>
         <br />
-        <food-progress :json-response="makeOrderJsonResponse" link-get-progress-action='<f:link.action pageType="100" pageUid="14" action="progressUpdate"></f:link.action>'></food-progress>
+        <food-progress :json-response="makeOrderJsonResponse" :progress-length="makeOrderJsonResponse.quantitySum"
+                       link-get-progress-action='<f:link.action pageType="100" pageUid="14" action="progressUpdate"></f:link.action>'></food-progress>
     </div>
 
     <div v-show="!finishedOrder">

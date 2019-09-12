@@ -54,14 +54,16 @@ class Order extends AbstractEntity
 
     /**
      * @param int $productIndex
+     * @param bool $checked
      * @return void
      *
      */
-    public function toggleProgress(int $productIndex) : void
+    public function alterProgress(int $productIndex, bool $checked) : void
     {
         $productprogressArray = explode(',', $this->productprogress);
         $length = count($productprogressArray);
-        $productprogressArray[$productIndex] = !$productprogressArray[$productIndex];
+        $productprogressArray[$productIndex] += $checked ? 1 : -1;
+        assert($productprogressArray[$productIndex] >= 0 && $productprogressArray[$productIndex] <= explode(',', $this->productquantities)[$productIndex]);
 
         $this->productprogress = '';
 

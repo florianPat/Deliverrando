@@ -11,34 +11,34 @@
                 };
             },
             methods: {
-                sendProgressUpdate(orderTrackerRecord, productIndex) {
+                sendProgressUpdate(orderTrackerRecord, productIndex, checked) {
                     let sendParams = new URLSearchParams();
                     sendParams.set('orderUid', orderTrackerRecord.uid);
                     sendParams.set('productIndex', productIndex);
+                    sendParams.set('checked', checked ? '1' : '0');
 
                     let xhttp = new XMLHttpRequest();
                     xhttp.open('POST', this.updateProgressLink, true);
                     xhttp.send(sendParams);
                 },
-                checkboxChange(orderIndex, productIndex)
+                checkboxChange(orderIndex, productIndex, i)
                 {
                     console.assert(this.finishedOrderTracker[orderIndex] !== undefined, 'finishedOrderTracker-entry needs to be defined!');
 
                     let orderTrackerRecord = this.finishedOrderTracker[orderIndex];
 
-                    orderTrackerRecord.checked[productIndex] = !orderTrackerRecord.checked[productIndex];
+                    let checked = orderTrackerRecord.checked[productIndex][i];
 
-                    if(orderTrackerRecord.checked[productIndex]) {
+                    this.sendProgressUpdate(orderTrackerRecord, productIndex, checked);
+
+                    if(checked) {
                         --orderTrackerRecord.count;
-
-                        this.sendProgressUpdate(orderTrackerRecord, productIndex);
 
                         if(orderTrackerRecord.count === 0) {
                             orderTrackerRecord.href = this.orders[orderIndex].finishLink;
                             orderTrackerRecord.color = 'cornflowerblue';
                         }
                     } else {
-                        this.sendProgressUpdate(orderTrackerRecord, productIndex);
                         orderTrackerRecord.href = "#";
                         orderTrackerRecord.color = 'slategray';
                         ++orderTrackerRecord.count;
@@ -84,13 +84,20 @@
                 this.$root.$on('ajaxResponse', (jsonResponse) => {
                     this.orders = jsonResponse.orders;
 
+                    //TODO: Optimize this! Now weird things happen due to reloading and recreating and false setting
                     this.finishedOrderTracker = [];
                     for(let order of this.orders) {
                         let productDescTracker = [];
+                        let nProductsForDesc = 0;
                         for(let productDesc of order.productDescriptions) {
-                            productDescTracker.push(false);
+                            let checkedArray = [];
+                            for(let i = 0; i < productDesc.quantity; ++i) {
+                                checkedArray.push(false);
+                            }
+                            productDescTracker.push(checkedArray);
+                            nProductsForDesc += productDesc.quantity;
                         }
-                        this.finishedOrderTracker.push({count: order.productDescriptions.length, href: "#",
+                        this.finishedOrderTracker.push({count: nProductsForDesc, href: "#",
                             color: 'slategray', uid: order.uid, checked: productDescTracker});
                     }
                 });
@@ -110,9 +117,9 @@
                             </div>
                             <ul class="list-group">
                                 <li class="list-group-item" v-for="(productDesc, pdIndex) in order.productDescriptions">
-                                    x{{ productDesc.quantity }} {{ productDesc.productName }} 
-                                    <input @change="checkboxChange(index, pdIndex);"
-                                        type="checkbox" style="float: right">
+                                    x{{ productDesc.quantity }} {{ productDesc.productName }}
+                                    <input v-for="i in productDesc.quantity" @change="checkboxChange(index, pdIndex, i - 1);"
+                                        v-model="finishedOrderTracker[index].checked[pdIndex][i - 1]" type="checkbox" style="float: right; margin-left: 1vw;">
                                 </li>
                             </ul>
                         </div>
