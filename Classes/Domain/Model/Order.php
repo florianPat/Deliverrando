@@ -22,6 +22,11 @@ class Order extends AbstractEntity
     protected $productquantities;
 
     /**
+     * @var string
+     */
+    protected $productprogress;
+
+    /**
      * @var int
      */
     protected $deliverytime;
@@ -34,6 +39,7 @@ class Order extends AbstractEntity
         $this->person = $person;
         $this->products = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
         $this->productquantities = '';
+        $this->productprogress = '';
         $this->deliverytime = 0;
     }
 
@@ -47,12 +53,46 @@ class Order extends AbstractEntity
     }
 
     /**
+     * @param int $productIndex
+     * @return void
+     *
+     */
+    public function toggleProgress(int $productIndex) : void
+    {
+        $productprogressArray = explode(',', $this->productprogress);
+        $length = count($productprogressArray);
+        $productprogressArray[$productIndex] = !$productprogressArray[$productIndex];
+
+        $this->productprogress = '';
+
+        assert($length > 0);
+
+        $this->productprogress .= $productprogressArray[0];
+        for($i = 1; $i < $length; ++$i) {
+            $this->productprogress .= ',' . $productprogressArray[$i];
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getProgress() : array
+    {
+        return explode(',', $this->productprogress);
+    }
+
+    /**
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
      * @return void
      */
     private function addProduct(\MyVendor\SitePackage\Domain\Model\Product $product) : void
     {
         $this->products->attach($product);
+        if($this->productprogress !== '') {
+            $this->productprogress .= ',0';
+        } else {
+            $this->productprogress .= '0';
+        }
     }
 
     /**

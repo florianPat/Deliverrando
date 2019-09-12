@@ -1,6 +1,5 @@
 <?php
 
-//TODO: Delete this??
 return [
     'ctrl' => [
         'title' => 'Person',

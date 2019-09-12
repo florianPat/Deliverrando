@@ -99,6 +99,14 @@ class StoreInventoryController extends ActionController implements LoggerAwareIn
     }
 
     /**
+     * @return void
+     */
+    private function persistAll() : void
+    {
+        $this->objectManager->get(PersistenceManager::class)->persistAll();
+    }
+
+    /**
      * @param string $messageText
      * @param \MyVendor\SitePackage\Domain\Model\Product $product
      * @return void
@@ -124,7 +132,7 @@ class StoreInventoryController extends ActionController implements LoggerAwareIn
             $this->view->assign("messageText", $messageText);
             $this->view->assign('messageProduct', $product);
 
-            $this->objectManager->get(PersistenceManager::class)->persistAll();
+            $this->persistAll();
         }
 
         if($context->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {
@@ -333,9 +341,35 @@ class StoreInventoryController extends ActionController implements LoggerAwareIn
 
         $this->sendEmail($loggedInPerson, $order->getDeliverytime(), $productNameList);
 
-        $this->view->setVariablesToRender(['deliverytimeRoot']);
-        $this->view->assignMultiple(['deliverytimeRoot' => [
+        $this->persistAll();
+
+        $this->view->setVariablesToRender(['responseRoot']);
+        $this->view->assignMultiple(['responseRoot' => [
             'deliverytime' => $order->getDeliverytime(),
+            'orderUid' => $order->getUid(),
+        ]]);
+    }
+
+    public function initializeProgressUpdateAction()
+    {
+        $this->defaultViewObjectName = \TYPO3\CMS\Extbase\Mvc\View\JsonView::class;
+    }
+
+    /**
+     * @return void
+     */
+    public function progressUpdateAction() : void
+    {
+        $orderUid = intval(GeneralUtility::_POST('orderUid'));
+        $order = $this->orderRepository->findByUid($orderUid);
+        $progress = ['finished'];
+        if($order !== null) {
+            $progress = $order->getProgress();
+        }
+
+        $this->view->setVariablesToRender(['progressRoot']);
+        $this->view->assignMultiple(['progressRoot' => [
+            'progress' => $progress,
         ]]);
     }
 }

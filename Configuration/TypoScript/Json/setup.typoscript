@@ -11,11 +11,21 @@ page {
     typeNum = 100
 
     //NOTE: list = plugin. The extensionKey_pluginName are needed here!
-    10 =< tt_content.list.20.sitepackage_productlist
+    //10 =< tt_content.list.20.sitepackage_productlist
+
+    10 = CASE
+    10 {
+        key.cObject = USER
+        key.cObject.userFunc = MyVendor\SitePackage\TypoScriptUserFunc\DynamicPluginBound->getSelectedPluginForTemplate
+
+        //TODO: Hard coding these was not my intention, but this is the only solution I know of right now!
+        sitepackage_productlist =< tt_content.list.20.sitepackage_productlist
+        sitepackage_bestellungen =< tt_content.list.20.sitepackage_bestellungen
+    }
 
     config {
         absRefPrefix = auto
-        cache_period = 86400
+        cache_period = 0
         debug = 1
         disablePrefixComment = 1
         doctype = html5

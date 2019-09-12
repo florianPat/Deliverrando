@@ -45,8 +45,14 @@ return [
                 'type' => 'input',
             ],
         ],
+        'productprogress' => [
+            'label' => 'Product Progress',
+            'config' => [
+                'type' => 'input',
+            ],
+        ],
     ],
     'types' => [
-        '0' => ['showitem' => 'person, products, deliverytime, productquantities'],
+        '0' => ['showitem' => 'person, products, deliverytime, productquantities, productprogress'],
     ],
 ];

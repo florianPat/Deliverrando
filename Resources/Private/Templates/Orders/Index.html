@@ -1,45 +1,6 @@
-<f:link.action pageUid="12" action="ajax" controller="Orders" id="ajaxUrl"></f:link.action>
+<f:link.action pageType="100" pageUid="12" action="ajax" controller="Orders" id="ajaxUrl"></f:link.action>
+<f:link.action pageType="100" pageUid="12" action="updateProgress" controller="Orders" id="progressUpdateUrl"></f:link.action>
 
-<div id="orderDisplay">
-        <f:for each="{orders}" as="order" iteration="it">
-            <f:if condition="{it.isFirst}">
-                <f:then>
-                    <div class="card-deck">
-                </f:then>
-                <f:else>
-                    <f:if condition="{it.isOdd}">
-                        </div>
-                        <div class="card-deck">
-                    </f:if>
-                </f:else>
-            </f:if>
-            <div class="card">
-                <h2 class="card-header">Order id: {order.uid}</h2>
-                <div class="card-body">
-                    <h4 class="card-subtitle">Person</h4>
-                    <p class="card-text">Name: {order.person.name}</p>
-                    <p class="card-text">Address: {order.person.address}</p>
-                    <p class="card-text">Telephone number: {order.person.telephonenumber}</p>
-                    <br />
-                    <div class="card-header">
-                        Products
-                    </div>
-                    <ul class="list-group">
-                        <f:for each="{order.productDescriptions}" as="productDesc">
-                            <li class="list-group-item">x{productDesc.quantity} {productDesc.product.name}</li>
-                        </f:for>
-                    </ul>
-                </div>
-                <div class="card-footer text-muted">
-                    <f:link.action action="finish" arguments="{order: order}" class="card-link">Finished!</f:link.action>
-                </div>
-            </div>
-            <f:if condition="{it.isLast}">
-                <f:if condition="{it.isOdd}">
-                    <div class="card"></div>
-                </f:if>
-
-                </div>
-            </f:if>
-        </f:for>
+<div id="vueOrderList">
+    <order-list />
 </div>

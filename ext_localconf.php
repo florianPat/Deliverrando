@@ -11,10 +11,10 @@ defined('TYPO3_MODE') || die('Access denied.');
   'MyVendor.SitePackage',
   'Productlist',
   [
-      'StoreInventory' => 'index, add, remove, show, update, login, register, logout, endOrder',
+      'StoreInventory' => 'index, add, remove, show, update, login, register, logout, endOrder, progressUpdate',
   ],
   [
-      'StoreInventory' => 'index, add, remove, show, update, login, register, logout, endOrder',
+      'StoreInventory' => 'index, add, remove, show, update, login, register, logout, endOrder, progressUpdate',
   ]
 );
 
@@ -22,10 +22,10 @@ defined('TYPO3_MODE') || die('Access denied.');
     'MyVendor.SitePackage',
     'Bestellungen',
     [
-        'Orders' => 'index, finish, ajax',
+        'Orders' => 'index, finish, ajax, updateProgress',
     ],
     [
-        'Orders' => 'index, finish, ajax',
+        'Orders' => 'index, finish, ajax, updateProgress',
     ]
 );
 

@@ -95,6 +95,7 @@ CREATE TABLE tx_sitepackage_domain_model_order(
     --products object-storage in domain, counter in db
     products int(11) unsigned DEFAULT 0 NOT NULL,
     productquantities varchar(255) DEFAULT '' NOT NULL,
+    productprogress varchar(255) DEFAULT '' NOT NULL,
     deliverytime int(11) DEFAULT 0 NOT NULL,
 
     crdate int(11) DEFAULT 0 NOT NULL,
@@ -116,6 +117,10 @@ CREATE TABLE tx_sitepackage_order_product_mm(
     tstamp int(11) unsigned DEFAULT 0 NOT NULL,
     deleted smallint(4) unsigned DEFAULT 0 NOT NULL,
     hidden smallint(4) unsigned DEFAULT 0 NOT NULL,
+);
+
+CREATE TABLE sys_template(
+    plugin_for_template varchar(255) DEFAULT '' NOT NULL
 );
 
 /* NOTE: Dieser table wird nur erstellt, wenn man im install tool unter Database Analyzer

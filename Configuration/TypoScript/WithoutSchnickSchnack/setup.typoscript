@@ -42,7 +42,7 @@ page {
 
     config {
         absRefPrefix = auto
-        cache_period = 86400
+        cache_period = 0
         debug = 1
         disablePrefixComment = 1
         doctype = html5
