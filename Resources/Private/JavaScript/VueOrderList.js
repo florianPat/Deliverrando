@@ -49,6 +49,21 @@
                     this.xhttp.open('POST', this.ajaxLink, true);
                     this.xhttp.send();
                 },
+                finishedMeal(index)
+                {
+                    if(this.finishedOrderTracker[index].color === 'cornflowerblue') {
+                        let xhttp = new XMLHttpRequest();
+
+                        xhttp.onreadystatechange = () => {
+                            if(this.xhttp.readyState == 4 && this.xhttp.status == 200) {
+                                this.triggerAjax();
+                            }
+                        };
+
+                        xhttp.open('GET', this.finishedOrderTracker[index].href, true);
+                        xhttp.send();
+                    }
+                },
             },
             created()
             {
@@ -82,23 +97,41 @@
             mounted()
             {
                 this.$root.$on('ajaxResponse', (jsonResponse) => {
-                    this.orders = jsonResponse.orders;
+                    console.log('ajaxResponse');
 
-                    //TODO: Optimize this! Now weird things happen due to reloading and recreating and false setting
-                    this.finishedOrderTracker = [];
-                    for(let order of this.orders) {
-                        let productDescTracker = [];
-                        let nProductsForDesc = 0;
-                        for(let productDesc of order.productDescriptions) {
-                            let checkedArray = [];
-                            for(let i = 0; i < productDesc.quantity; ++i) {
-                                checkedArray.push(false);
+                    for(let i = 0; i < jsonResponse.orders.length; ++i) {
+                        if(this.orders.length <= i) {
+                            const order = jsonResponse.orders[i];
+
+                            let productDescTracker = [];
+                            let nProductsForDesc = 0;
+                            for(let productDesc of order.productDescriptions) {
+                                let checkedArray = [];
+                                for(let i = 0; i < productDesc.quantity; ++i) {
+                                    checkedArray.push(false);
+                                }
+                                productDescTracker.push(checkedArray);
+                                nProductsForDesc += productDesc.quantity;
                             }
-                            productDescTracker.push(checkedArray);
-                            nProductsForDesc += productDesc.quantity;
+                            this.finishedOrderTracker.push({count: nProductsForDesc, href: "#",
+                                color: 'slategray', uid: order.uid, checked: productDescTracker});
+
+                            this.orders.push(jsonResponse.orders[i]);
+                        } else if(this.orders[i].uid !== jsonResponse.orders[i].uid) {
+                            console.log('remove order');
+                            this.orders = this.orders.slice(0, i).concat(this.orders.slice(i + 1, this.orders.length));
+                            this.finishedOrderTracker = this.finishedOrderTracker.slice(0, i)
+                                .concat(this.finishedOrderTracker.slice(i + 1, this.finishedOrderTracker.length));
+
+                            --i;
                         }
-                        this.finishedOrderTracker.push({count: nProductsForDesc, href: "#",
-                            color: 'slategray', uid: order.uid, checked: productDescTracker});
+                    }
+
+                    if(this.orders.length > jsonResponse.orders.length) {
+                        for(let i = 0; i < (this.orders.length - jsonResponse.orders.length); ++i) {
+                            this.orders.pop();
+                            this.finishedOrderTracker.pop();
+                        }
                     }
                 });
             },
@@ -124,7 +157,7 @@
                             </ul>
                         </div>
                         <div class="card-footer text-muted">
-                            <a class="card-link" :href="finishedOrderTracker[index].href" :style="{color: finishedOrderTracker[index].color}">Finished!</a>
+                            <a class="card-link" @click="finishedMeal(index);" href="#" :style="{color: finishedOrderTracker[index].color}">Finished!</a>
                         </div>
                     </div>
                      

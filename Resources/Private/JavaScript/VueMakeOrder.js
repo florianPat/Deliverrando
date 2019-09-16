@@ -174,7 +174,7 @@
         const FoodProgress = {
             data() {
                 return {
-                    percent: 3,
+                    percent: 0,
                     progress: "Die Zubereitung beginnt...",
                     style: {
                         height: '30px',
