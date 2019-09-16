@@ -14,3 +14,32 @@
     'Bestellungen',
     'Die Bestellungen der Kunden'
 );
+
+//NOTE: Add the content element to the list
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
+    ['LargePictureWithText', 'sitepackage_largeimagetext'],
+    'CType',
+    'site_package'
+);
+
+//NOTE: Define the tca for the new content element
+$GLOBALS['TCA']['tt_content']['types']['sitepackage_largeimagetext'] = [
+    'showitem' => '
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+            --palette--;;general,
+            header;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:header_formlabel,
+        --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.images,
+            image,
+        --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
+            --palette--;;frames,
+            --palette--;;appearanceLinks,
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+            --palette--;;hidden,
+            --palette--;;access,
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories,
+            categories,
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
+            rowDescription,
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
+   ',
+];

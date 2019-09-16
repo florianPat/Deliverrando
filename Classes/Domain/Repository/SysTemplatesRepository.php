@@ -69,4 +69,19 @@ class SysTemplatesRepository
         }
         return $result;
     }
+
+    /**
+     * @param int $pid
+     */
+    public function findHeaderForLargePictureWithText(int $pid)
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+
+        $statement = $queryBuilder->select('header')->from('tt_content')->where(
+            $queryBuilder->expr()->eq('pid', $pid),
+            $queryBuilder->expr()->eq('CType', $queryBuilder->createNamedParameter('sitepackage_largeimagetext'))
+        )->execute();
+
+        return $statement->fetch()['header'];
+    }
 }

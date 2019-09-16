@@ -306,11 +306,13 @@ class StoreInventoryController extends ActionController implements LoggerAwareIn
         string $productNameList) : void
     {
         $email = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
-        $email->setContentType('text/html');
-        $email->setSubject("Delieverrando order");
+        $email->setCharset('UTF-8');
+        $email->setSubject("Delieverrando Bestellung");
         $email->setFrom(['order@delieverrando.com' => 'Delieverrando']);
         $email->setTo([$loggedInPerson->getEmail() => $loggedInPerson->getName()]);
-        $email->setBody("<h4>You ordered food!</h4><p>It will be delivered in: " . $deliveryTime . " minutes!</p><p>You ordered:</p>" . $productNameList);
+        $email->setBody("<h4>Du hast Essen bestellt!</h4>" . "<p>Es wird in: " . $deliveryTime . ($deliveryTime === 1 ? " Minute " : " Minuten ")
+            ."geliefert!<br />Bestellzusammenfassung:</p>" . $productNameList, ENT_QUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE,
+            'UTF-8');
         $email->send();
     }
 

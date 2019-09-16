@@ -9,14 +9,16 @@
                        link-get-progress-action='<f:link.action pageType="100" pageUid="14" action="progressUpdate"></f:link.action>'></food-progress>
     </div>
 
-    <div v-show="!finishedOrder">
-        <f:if condition="{messageText}">
-            <div class="row">
-                <p id="operationMsg"><em>{messageText} the item <strong>"{messageProduct.name}"</strong></em></p>
-            </div>
-        </f:if>
-
+    <span v-show="!finishedOrder">
         <div class="row">
+            <f:if condition="{messageText}">
+                <div class="row">
+                    <p id="operationMsg"><em>{messageText} the item <strong>"{messageProduct.name}"</strong></em></p>
+                </div>
+            </f:if>
+        </div>
+
+        <div class="row" style="background-color: white; padding: 1vw;">
             <f:if condition="{opened}">
                 <f:then>
                     <div class="columns-10">
@@ -78,8 +80,6 @@
             </f:if>
         </div>
 
-        <br>
-
         <div style="display: none">
             <f:form.validationResults>
                 <!-- does the array "errors" contain a value? -->
@@ -93,54 +93,56 @@
             </f:form.validationResults>
         </div>
 
-        <!-- where your own viewhelpers are defined -->
-        {namespace myVH=MyVendor\SitePackage\ViewHelper}
+        <div style="background-color: ghostwhite; padding: 1vw;">
+            <!-- where your own viewhelpers are defined -->
+            {namespace myVH=MyVendor\SitePackage\ViewHelper}
 
-        <!--Ist der user als frontend user eingeloggt?-->
-        <f:security.ifAuthenticated>
-            <!-- NOTE: wenn man name="argument" benutzt, wird das argument beim aufruf richtig gemappt. arguments="" wie bei einem link
-                 bringen gar nichts! -->
-            <!-- NOTE: name="the argument of the action" in .form und property setzt das argument!! -->
-            <f:form name="product" controller="StoreInventory" action="add">
-                <myVH:formFieldHelp tag='<f:form.textfield property="name" required="true" />' idPrefix="addAction" />
-                <myVH:formFieldHelp tag='<f:form.textarea property="description" required="true" />' idPrefix="addAction" />
-                <myVH:formFieldHelp tag='<f:form.textfield property="quantity" type="number" required="true" />' idPrefix="addAction" />
-                <myVH:formFieldHelp tag='<f:form.textfield property="deliverytime" type="number" required="true" />' idPrefix="addAction" />
-                <!-- categoryOptions ist ein azzoiatives array, wo der key der wert des arguments ist, und das value, was man auswählen kann -->
-                <f:form.select name="category" options="{categoryOptions}" /> <p></p><br />
+            <!--Ist der user als frontend user eingeloggt?-->
+            <f:security.ifAuthenticated>
+                <!-- NOTE: wenn man name="argument" benutzt, wird das argument beim aufruf richtig gemappt. arguments="" wie bei einem link
+                     bringen gar nichts! -->
+                <!-- NOTE: name="the argument of the action" in .form und property setzt das argument!! -->
+                <f:form name="product" controller="StoreInventory" action="add">
+                    <myVH:formFieldHelp tag='<f:form.textfield property="name" required="true" />' idPrefix="addAction" />
+                    <myVH:formFieldHelp tag='<f:form.textarea property="description" required="true" />' idPrefix="addAction" />
+                    <myVH:formFieldHelp tag='<f:form.textfield property="quantity" type="number" required="true" />' idPrefix="addAction" />
+                    <myVH:formFieldHelp tag='<f:form.textfield property="deliverytime" type="number" required="true" />' idPrefix="addAction" />
+                    <!-- categoryOptions ist ein azzoiatives array, wo der key der wert des arguments ist, und das value, was man auswählen kann -->
+                    <f:form.select name="category" options="{categoryOptions}" /> <p></p><br />
 
-                <f:form.submit value="Add"/>
-            </f:form>
-        </f:security.ifAuthenticated>
+                    <f:form.submit value="Add"/>
+                </f:form>
+            </f:security.ifAuthenticated>
 
-        <!-- So kann man die Errors viel einfacher einbauen -->
-        <f:comment>
-            <f:form.textfield property="name" required="true" />
-            <f:render section="formError" arguments="{property: 'name'}" />
-            <f:form.textarea property="description" required="true" />
-            <f:render section="formError" arguments="{property: 'description'}" />
-            <f:form.textfield property="quantity" type="number" required="true" />
-            <f:render section="formError" arguments="{property: 'quantity'}" />
+            <!-- So kann man die Errors viel einfacher einbauen -->
+            <f:comment>
+                <f:form.textfield property="name" required="true" />
+                <f:render section="formError" arguments="{property: 'name'}" />
+                <f:form.textarea property="description" required="true" />
+                <f:render section="formError" arguments="{property: 'description'}" />
+                <f:form.textfield property="quantity" type="number" required="true" />
+                <f:render section="formError" arguments="{property: 'quantity'}" />
 
-            <f:section name="formError">
-                <f:form.validationResults for="product.{property}">
-                    <!-- does the array "errors" contain a value? -->
-                    <f:if condition="{validationResults.flattenedErrors}">
-                        <!-- get the "error" array. The key is the property path and the value is an array of errors. -->
-                        <f:for each="{validationResults.flattenedErrors}" as="errors" key="propertyPath">
-                            <ul class="formValidationErrorResult">{propertyPath}<f:for each="{errors}" as="error"><li>{error.message}
-                                <f:translate key="error.product.{property}.{error.code}" /> 'error.product.{property}.{error.code}'
-                            </li></f:for></ul>
-                        </f:for>
-                        <p id="lastAction">{lastAction}</p>
-                    </f:if>
-                </f:form.validationResults>
-            </f:section>
-        </f:comment>
+                <f:section name="formError">
+                    <f:form.validationResults for="product.{property}">
+                        <!-- does the array "errors" contain a value? -->
+                        <f:if condition="{validationResults.flattenedErrors}">
+                            <!-- get the "error" array. The key is the property path and the value is an array of errors. -->
+                            <f:for each="{validationResults.flattenedErrors}" as="errors" key="propertyPath">
+                                <ul class="formValidationErrorResult">{propertyPath}<f:for each="{errors}" as="error"><li>{error.message}
+                                    <f:translate key="error.product.{property}.{error.code}" /> 'error.product.{property}.{error.code}'
+                                </li></f:for></ul>
+                            </f:for>
+                            <p id="lastAction">{lastAction}</p>
+                        </f:if>
+                    </f:form.validationResults>
+                </f:section>
+            </f:comment>
+        </div>
 
         <br>
-        <br>
 
+        <div style="background-color: whitesmoke; padding: 1vw;">
         <f:security.ifAuthenticated>
             <f:then>
                 <f:cObject typoscriptObjectPath="lib.login" />
@@ -153,7 +155,7 @@
                         <f:link.action action="logout" controller="StoreInventory">Logout</f:link.action>
                     </f:then>
                     <f:else>
-                        <p>You are a visitor!</p>
+                        <h5>Zurzeit bist du noch ein Besucher!</h5>
                         <f:link.page pageUid="5">Als Anbieter anmelden...</f:link.page>
                         <br />
 
@@ -178,5 +180,6 @@
                 </f:if>
             </f:else>
         </f:security.ifAuthenticated>
+        </div>
     </div>
 </div>

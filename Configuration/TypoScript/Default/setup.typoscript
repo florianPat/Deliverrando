@@ -1,10 +1,12 @@
 <INCLUDE_TYPOSCRIPT: source="FILE:EXT:fluid_styled_content/Configuration/TypoScript/setup.txt">
 <INCLUDE_TYPOSCRIPT: source="FILE:EXT:site_package/Configuration/TypoScript/Default/Helper/DynamicContent.typoscript">
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:site_package/Configuration/TypoScript/LargePictureWithText/setup.typoscript">
 
 // This is a template (but not a "website template" thing (can be fluid based, raw html based, ...) which loads a website template
 // But typoscript can also function as a "website template". The setup part in the docs are for the "what typo3 uses to render the page"?
 // One can set variables and "dataProcessing", which then is avaliable in the fluid template.
 
+//NOTE: Set the "where is the data page" for the fronted login extension
 plugin.tx_felogin_pi1.storagePid = 8
 
 page = PAGE
@@ -21,8 +23,11 @@ page {
 		templateName.stdWrap.cObject {
 			key.field = backend_layout
 
-			pagets__test = TEXT
-			pagets__test.value = TwoColumns
+			pagets__twoColumns = TEXT
+			pagets__twoColumns.value = TwoColumns
+
+			pagets__oneElement = TEXT
+			pagets__oneElement.value = OneElement
 
 			default = TEXT
 			default.value = Default

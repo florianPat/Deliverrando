@@ -1,0 +1,27 @@
+lib.contentElement {
+    templateRootPaths {
+        200 = EXT:site_package/Resources/Private/Templates/Page/
+    }
+}
+
+lib.text = CONTENT
+lib.text {
+    table = tt_content
+    select {
+        selectFields = header
+        where = uid = 18
+    }
+    renderObj = TEXT
+    renderObj.field = header
+}
+
+tt_content {
+    sitepackage_largeimagetext =< lib.contentElement
+    sitepackage_largeimagetext {
+        templateName = LargeImageText
+
+        dataProcessing {
+            1 = MyVendor\SitePackage\DataProcessing\LargePictureWithTextProcessor
+        }
+    }
+}
